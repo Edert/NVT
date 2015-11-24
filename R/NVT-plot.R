@@ -1,2 +1,0 @@
-
-#plot MA-plot

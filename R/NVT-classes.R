@@ -26,5 +26,8 @@ setClass(
     method="character",
     exp1="data.frame",
     exp2="data.frame",
-    hklist="character")
+    hklist="character",
+    norm1="data.frame",
+    norm2="data.frame"
+    )
 )

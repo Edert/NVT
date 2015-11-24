@@ -23,6 +23,40 @@ init <- function(hkgene_list, exp_list1, exp_list2, method){
   }
 }
 
+#normalize
+normalize <- function(NVTdata) {
+
+  if(check_expression_list(NVTdata@exp1) && check_expression_list(NVTdata@exp2) && check_hkgene_list(NVTdata@hklist) && check_method(NVTdata@method)){
+    switch(NVTdata@method,
+           N={
+             NVTdata@norm1 <- NVTdata@exp1
+             NVTdata@norm2 <- NVTdata@exp2
+           },
+           TC={
+             # case 'bar' here...
+             print('bar')
+           },
+           {
+             NVTdata@norm1 <- NVTdata@exp1
+             NVTdata@norm2 <- NVTdata@exp2
+           }
+    )
+
+    return(NVTdata)
+  }else{
+    stop("Not a valid NVTdata object!")
+  }
+}
+
+
+
+
+
+
+
+
+
+
 check_hkgene_list <- function(hkgene_list) {
   if( is.character(hkgene_list) ){
     return(TRUE)
