@@ -29,8 +29,8 @@ NVTnormalize <- function(NVTdata) {
   if(check_expression_list(NVTdata@exp1) && check_expression_list(NVTdata@exp2) && check_hkgene_list(NVTdata@hklist) && check_method(NVTdata@method)){
     switch(NVTdata@method,
            N={
-             NVTdata@norm1 <- NVTdata@exp1
-             NVTdata@norm2 <- NVTdata@exp2
+             #NVTdata@norm1 <- NVTdata@exp1
+             #NVTdata@norm2 <- NVTdata@exp2
            },
            TC={
 
@@ -80,6 +80,17 @@ NVTplot <- function(NVTdata) {
      && check_hkgene_list(NVTdata@hklist) && check_method(NVTdata@method)
      && check_expression_list(NVTdata@norm1)  && check_expression_list(NVTdata@norm2)){
 
+    plot(log(NVTdata@norm1[,1]),log(NVTdata@norm2[,1]),main=paste("MA-plot", names(mynorm@norm1),"vs.",names(mynorm@norm2)),
+         xlab=paste("log( normalized expression",names(mynorm@norm1),")"),ylab=paste("log( normalized expression",names(mynorm@norm2),")")
+         ,asp=1,pch=20,col="grey")
+
+    m1 <- log(NVTdata@norm1[NVTdata@hklist,])
+    m2 <- log(NVTdata@norm2[NVTdata@hklist,])
+
+    points(m1,m2,col="blue",pch=19)
+
+    #fm <- lm(m2[,1] ~ m1[,1])
+    #abline(fm, col = "red")
 
   }else{
     stop("Not a valid NVTdata object with normalized values!")

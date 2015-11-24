@@ -1,3 +1,4 @@
+	sample2
 gene1	54
 gene2	85
 gene3	19
