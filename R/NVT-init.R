@@ -2,7 +2,7 @@
 method_v <- c("N","TC","Med","TMM","UQ","Q","RPKM","DEQ","ER","TPM","G")
 
 #initialize and load input
-init <- function(hkgene_list, exp_list1, exp_list2, method){
+NVTinit <- function(hkgene_list, exp_list1, exp_list2, method){
 
   if (missing('hkgene_list')){
     stop("No housekeeping-gene list specified!")
@@ -24,7 +24,7 @@ init <- function(hkgene_list, exp_list1, exp_list2, method){
 }
 
 #normalize
-normalize <- function(NVTdata) {
+NVTnormalize <- function(NVTdata) {
 
   if(check_expression_list(NVTdata@exp1) && check_expression_list(NVTdata@exp2) && check_hkgene_list(NVTdata@hklist) && check_method(NVTdata@method)){
     switch(NVTdata@method,
@@ -33,8 +33,34 @@ normalize <- function(NVTdata) {
              NVTdata@norm2 <- NVTdata@exp2
            },
            TC={
-             # case 'bar' here...
-             print('bar')
+
+           },
+           Med={
+
+           },
+           TMM={
+
+           },
+           UQ={
+
+           },
+           Q={
+
+           },
+           RPKM={
+
+           },
+           DEQ={
+
+           },
+           ER={
+
+           },
+           TPM={
+
+           },
+           G={
+
            },
            {
              NVTdata@norm1 <- NVTdata@exp1
@@ -48,12 +74,31 @@ normalize <- function(NVTdata) {
   }
 }
 
+#plot data
+NVTplot <- function(NVTdata) {
+  if(check_expression_list(NVTdata@exp1) && check_expression_list(NVTdata@exp2)
+     && check_hkgene_list(NVTdata@hklist) && check_method(NVTdata@method)
+     && check_expression_list(NVTdata@norm1)  && check_expression_list(NVTdata@norm2)){
 
 
+  }else{
+    stop("Not a valid NVTdata object with normalized values!")
+  }
+}
 
 
+#calculate pearson correclation of housekeeping genes
+NVTpearson <- function(NVTdata) {
+  if(check_expression_list(NVTdata@exp1) && check_expression_list(NVTdata@exp2)
+     && check_hkgene_list(NVTdata@hklist) && check_method(NVTdata@method)
+     && check_expression_list(NVTdata@norm1)  && check_expression_list(NVTdata@norm2)){
 
 
+  }else{
+    stop("Not a valid NVTdata object with normalized values!")
+  }
+
+}
 
 
 
