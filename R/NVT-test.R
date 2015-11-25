@@ -3,11 +3,67 @@
 
 myexp1 = read.table("exp1.txt")
 myexp2 = read.table("exp2.txt")
+mylen = read.table("length.txt")
 mylist1=c('gene1','gene2','gene3','gene10')
 
 #execute
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
-
 mynorm <- NVTnormalize(mynvt)
-
 NVTplot(mynorm)
+NVTpearson(mynorm)
+
+mynvt3 <- NVTinit(mylist1,myexp1,myexp2,"TC",mylen)
+mynorm3 <- NVTnormalize(mynvt3)
+NVTplot(mynorm3)
+NVTpearson(mynorm3)
+
+mynvt4 <- NVTinit(mylist1,myexp1,myexp2,"Med",mylen)
+mynorm4 <- NVTnormalize(mynvt4)
+NVTplot(mynorm4)
+NVTpearson(mynorm4)
+
+mynvt5 <- NVTinit(mylist1,myexp1,myexp2,"TMM",mylen)
+mynorm5 <- NVTnormalize(mynvt5)
+NVTplot(mynorm5)
+NVTpearson(mynorm5)
+
+mynvt6 <- NVTinit(mylist1,myexp1,myexp2,"UQ",mylen)
+mynorm6 <- NVTnormalize(mynvt6)
+NVTplot(mynorm6)
+NVTpearson(mynorm6)
+
+mynvt7 <- NVTinit(mylist1,myexp1,myexp2,"UQ2",mylen)
+mynorm7 <- NVTnormalize(mynvt7)
+NVTplot(mynorm7)
+NVTpearson(mynorm7)
+
+mynvt8 <- NVTinit(mylist1,myexp1,myexp2,"Q",mylen)
+mynorm8 <- NVTnormalize(mynvt8)
+NVTplot(mynorm8)
+NVTpearson(mynorm8)
+
+mynvt2 <- NVTinit(mylist1,myexp1,myexp2,"RPKM",mylen)
+mynorm2 <- NVTnormalize(mynvt2)
+NVTplot(mynorm2)
+NVTpearson(mynorm2)
+
+mynvt9 <- NVTinit(mylist1,myexp1,myexp2,"RPKM2",mylen)
+mynorm9 <- NVTnormalize(mynvt9)
+NVTplot(mynorm9)
+NVTpearson(mynorm9)
+
+mynvt10 <- NVTinit(mylist1,myexp1,myexp2,"DEQ",mylen)
+mynorm10 <- NVTnormalize(mynvt10)
+NVTplot(mynorm10)
+NVTpearson(mynorm10)
+
+mynvt11 <- NVTinit(mylist1,myexp1,myexp2,"TPM",mylen)
+mynorm11 <- NVTnormalize(mynvt11)
+NVTplot(mynorm11)
+NVTpearson(mynorm11)
+
+mynvt12 <- NVTinit(mylist1,myexp1,myexp2,"G",mylen)
+mynorm12 <- NVTnormalize(mynvt12)
+NVTplot(mynorm12)
+NVTpearson(mynorm12)
+

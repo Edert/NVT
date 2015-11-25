@@ -1,0 +1,11 @@
+	length
+gene1	10
+gene2	15
+gene3	5
+gene4	15
+gene5	16
+gene6	10
+gene7	8
+gene8	5
+gene9	10
+gene10	17

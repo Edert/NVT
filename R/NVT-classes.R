@@ -28,6 +28,16 @@ setClass(
     exp2="data.frame",
     hklist="character",
     norm1="data.frame",
-    norm2="data.frame"
-    )
+    norm2="data.frame",
+    length="data.frame"
+    ),
+  prototype=prototype(
+    method="N",
+    exp1=data.frame(),
+    exp2=data.frame(),
+    hklist=character(),
+    norm1=data.frame(),
+    norm2=data.frame(),
+    length=data.frame()
+  )
 )
