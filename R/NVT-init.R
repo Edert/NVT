@@ -271,8 +271,8 @@ NVTpearson <- function(NVTdataobj) {
      && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@method)
      && check_expression_list(NVTdataobj@norm1)  && check_expression_list(NVTdataobj@norm2)){
 
-    m1 <- log(NVTdataobj@norm1[NVTdataobj@hklist,])
-    m2 <- log(NVTdataobj@norm2[NVTdataobj@hklist,])
+    m1 <- NVTdataobj@norm1[NVTdataobj@hklist,]
+    m2 <- NVTdataobj@norm2[NVTdataobj@hklist,]
 
     pearson <- cor(m1,m2,method="pearson")
     return(pearson)
