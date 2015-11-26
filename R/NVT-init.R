@@ -1,5 +1,5 @@
 #global methods availible
-method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPKM2","DEQ","ER","TPM","G")
+method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPKM2","RPM","DEQ","TPM","G")
 
 #initialize and load input
 NVTinit <- function(hkgene_list, exp_list1, exp_list2, method, length){
@@ -133,11 +133,33 @@ NVTnormalize <- function(NVTdataobj) {
 
              ci1 <- NVTdataobj@exp1[,1]
              N1 <- sum(ci1)
-             NVTdataobj@norm1 <- 10^9*ci1/li*N1
+             NVTdataobj@norm1 <- ci1/(N1/10^9)/(li)
+             #NVTdataobj@norm1 <- 10^9*ci1/li*N1
 
              ci2 <- NVTdataobj@exp2[,1]
              N2 <- sum(ci2)
-             NVTdataobj@norm2 <- 10^9*ci2/li*N2
+             NVTdataobj@norm2 <- ci2/(N1/10^9)/(li)
+             #NVTdataobj@norm2 <- 10^9*ci2/li*N2
+             colnames(NVTdataobj@norm1)=names(NVTdataobj@exp1)
+             colnames(NVTdataobj@norm2)=names(NVTdataobj@exp2)
+           },
+           RPM={
+             print ("RPM normalization!")
+
+             if(nrow(NVTdataobj@length)==0){
+               stop("No RPKM normalization possible without gene length")
+             }
+
+             li <- NVTdataobj@length
+
+             ci1 <- NVTdataobj@exp1[,1]
+             N1 <- sum(ci1)
+             NVTdataobj@norm1 <- ci1/(N1/10^9)
+
+             ci2 <- NVTdataobj@exp2[,1]
+             N2 <- sum(ci2)
+             NVTdataobj@norm1 <- ci2/(N1/10^9)
+
              colnames(NVTdataobj@norm1)=names(NVTdataobj@exp1)
              colnames(NVTdataobj@norm2)=names(NVTdataobj@exp2)
            },
@@ -170,9 +192,6 @@ NVTnormalize <- function(NVTdataobj) {
              colnames(NVTdataobj@norm1)=names(NVTdataobj@exp1)
              colnames(NVTdataobj@norm2)=names(NVTdataobj@exp2)
            },
-           ER={
-            #TMM?
-           },
            TPM={
              print ("TPM normalization!")
 
@@ -185,13 +204,18 @@ NVTnormalize <- function(NVTdataobj) {
 
              ci1 <- NVTdataobj@exp1[,1]
              N1 <- sum(ci1)
-             RPKM1 <- 10^9*ci1/li*N1
-             NVTdataobj@norm1 <- ml*RPKM1/sum(RPKM1)*10^3
+             #RPKM1 <- 10^9*ci1/li*N1
+             #NVTdataobj@norm1 <- ml*RPKM1/sum(RPKM1)*10^3
+             RPK1 <- ci1/(li/1000)
+             NVTdataobj@norm1 <- RPK1/(sum(RPK1)/10^6)
 
              ci2 <- NVTdataobj@exp2[,1]
              N2 <- sum(ci2)
-             RPKM2 <- 10^9*ci2/li*N2
-             NVTdataobj@norm2 <- ml*RPKM2/sum(RPKM2)*10^3
+             #RPKM2 <- 10^9*ci2/li*N2
+             #NVTdataobj@norm2 <- ml*RPKM2/sum(RPKM2)*10^3
+             RPK2 <- ci2/(li/1000)
+             NVTdataobj@norm2 <- RPK2/(sum(RPK2)/10^6)
+
              colnames(NVTdataobj@norm1)=names(NVTdataobj@exp1)
              colnames(NVTdataobj@norm2)=names(NVTdataobj@exp2)
            },
