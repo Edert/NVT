@@ -1,6 +1,5 @@
 
 #load testdata
-
 myexp1 = read.table("exp1.txt")
 myexp2 = read.table("exp2.txt")
 mylen = read.table("length.txt")

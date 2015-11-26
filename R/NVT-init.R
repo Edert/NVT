@@ -257,8 +257,11 @@ NVTplot <- function(NVTdataobj) {
 
     points(m1,m2,col="blue",pch=19)
 
-    #fm <- lm(m2[,1] ~ m1[,1])
-    #abline(fm, col = "red")
+    m <- cbind(m1,m2)
+    idx <- apply(m, 1, function(x) all(is.finite(x)))
+    m <- m[idx,]
+    fm <- lm(m[,2] ~ m[,1])
+    abline(fm, col = "red")
 
   }else{
     stop("Not a valid NVTdata object with normalized values!")
