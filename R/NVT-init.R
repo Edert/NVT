@@ -248,9 +248,12 @@ NVTplot <- function(NVTdataobj) {
      && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@method)
      && check_expression_list(NVTdataobj@norm1)  && check_expression_list(NVTdataobj@norm2)){
 
+    min <- 0
+    max <- max(log(NVTdataobj@norm1[,1]),log(NVTdataobj@norm2[,1]))
+
     plot(log(NVTdataobj@norm1[,1]),log(NVTdataobj@norm2[,1]),main=paste("MA-plot", names(NVTdataobj@norm1),"vs.",names(NVTdataobj@norm2)),
          xlab=paste("log( normalized expression",names(NVTdataobj@norm1),")"),ylab=paste("log( normalized expression",names(NVTdataobj@norm2),")")
-         ,asp=1,pch=20,col="grey")
+         ,pch=20,col="grey",xlim=c(min, max),ylim=c(min, max))
 
     m1 <- log(NVTdataobj@norm1[NVTdataobj@hklist,])
     m2 <- log(NVTdataobj@norm2[NVTdataobj@hklist,])
@@ -260,7 +263,13 @@ NVTplot <- function(NVTdataobj) {
     m <- cbind(m1,m2)
     idx <- apply(m, 1, function(x) all(is.finite(x)))
     m <- m[idx,]
+    idx <- apply(m, 1, function(x) all(is.na(x)))
+    m <- m[idx,]
+    idx <- apply(m, 1, function(x) all(is.nan(x)))
+    m <- m[idx,]
     fm <- lm(m[,2] ~ m[,1])
+
+    abline(0, 1, col = "black", lwd = 1, lty = 2)
     abline(fm, col = "red")
 
   }else{
@@ -295,10 +304,10 @@ check_hkgene_list <- function(hkgene_list) {
 }
 
 check_expression_list <- function(exp_list) {
-  if( is.data.frame(exp_list) ){
+  if( is.data.frame(exp_list) || is.list(exp_list) || is.vector(exp_list)){
     return(TRUE)
   }else{
-    stop("Expression list is no data frame!")
+    stop("Expression list is no data frame, list or vector!")
   }
 }
 

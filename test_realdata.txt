@@ -1,0 +1,24 @@
+
+#load testdata
+myexp = read.table("D+Y_exp_data_mapped_reads_unnormalized.txt",header=TRUE,row.names=1)
+myexp1 <- as.data.frame(myexp$Mapped_reads_Hypoxy)
+names(myexp1) <- names(myexp)[1]
+row.names(myexp1) <- row.names(myexp)
+myexp2 <- as.data.frame(myexp$Mapped_reads_Normoxy)
+names(myexp2) <- names(myexp)[2]
+row.names(myexp2) <- row.names(myexp)
+
+mylen = read.table("Gene_length.txt",header=TRUE,row.names=1)
+
+mylist1=c('CT462','CT115','CT045','CT678')
+
+#execute
+mynvt <- NVTinit(mylist1,myexp1,myexp2,"RPKM",mylen)
+mynorm <- NVTnormalize(mynvt)
+NVTplot(mynorm)
+NVTpearson(mynorm)
+
+mynvt5 <- NVTinit(mylist1,myexp1,myexp2,"TMM",mylen)
+mynorm5 <- NVTnormalize(mynvt5)
+NVTplot(mynorm5)
+NVTpearson(mynorm5)
