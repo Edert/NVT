@@ -1,6 +1,6 @@
 
 #load testdata
-myexp = read.table("D+Y_exp_data_mapped_reads_unnormalized.txt",header=TRUE,row.names=1)
+myexp <- read.table("D+Y_exp_data_mapped_reads_unnormalized.txt",header=TRUE,row.names=1)
 myexp1 <- as.data.frame(myexp$Mapped_reads_Hypoxy)
 names(myexp1) <- names(myexp)[1]
 row.names(myexp1) <- row.names(myexp)

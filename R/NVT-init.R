@@ -50,8 +50,8 @@ NVTnormalize <- function(NVTdataobj) {
              ci2 <- NVTdataobj@exp2[,1]
              N2 <- sum(ci2)
              m=mean(c(N1,N2))
-             NVTdataobj@norm1 <-  as.data.frame(ci1/(N1+N2)*m)
-             NVTdataobj@norm2 <-  as.data.frame(ci2/(N1+N2)*m)
+             NVTdataobj@norm1 <-  as.list(ci1/(N1+N2)*m)
+             NVTdataobj@norm2 <-  as.list(ci2/(N1+N2)*m)
            },
            Med={
              print ("Median normalization!")
@@ -61,8 +61,8 @@ NVTnormalize <- function(NVTdataobj) {
              ci2 <- NVTdataobj@exp2[,1]
              N2 <- median(ci2)
              m=mean(c(N1,N2))
-             NVTdataobj@norm1 <-  as.data.frame(ci1/(N1+N2)*m)
-             NVTdataobj@norm2 <-  as.data.frame(ci2/(N1+N2)*m)
+             NVTdataobj@norm1 <-  as.list(ci1/(N1+N2)*m)
+             NVTdataobj@norm2 <-  as.list(ci2/(N1+N2)*m)
 
            },
            TMM={
@@ -72,8 +72,8 @@ NVTnormalize <- function(NVTdataobj) {
              mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
 
              mynormmatrix <- tmm(mymatrix)
-             NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
-             NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+             NVTdataobj@norm1 <- as.list(mynormmatrix[,1])
+             NVTdataobj@norm2 <- as.list(mynormmatrix[,2])
            },
            UQ={
              print ("Upper Quartile normalization!")
@@ -83,8 +83,8 @@ NVTnormalize <- function(NVTdataobj) {
              ci2 <- NVTdataobj@exp2[,1]
              N2 <- quantile(ci2, 0.75)
              m=mean(c(N1,N2))
-             NVTdataobj@norm1 <- as.data.frame(ci1/(N1+N2)*m)
-             NVTdataobj@norm2 <- as.data.frame(ci2/(N1+N2)*m)
+             NVTdataobj@norm1 <- as.list(ci1/(N1+N2)*m)
+             NVTdataobj@norm2 <- as.list(ci2/(N1+N2)*m)
            },
            UQ2={
              print ("Upper Quartile normalization!")
@@ -93,8 +93,8 @@ NVTnormalize <- function(NVTdataobj) {
              mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
 
              mynormmatrix <- uqua(mymatrix)
-             NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
-             NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+             NVTdataobj@norm1 <- as.list(mynormmatrix[,1])
+             NVTdataobj@norm2 <- as.list(mynormmatrix[,2])
            },
            Q={
              print ("Quantile normalization!")
@@ -102,8 +102,8 @@ NVTnormalize <- function(NVTdataobj) {
 
              mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
              mynormmatrix <- normalizeBetweenArrays(mymatrix,"quantile")
-             NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
-             NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+             NVTdataobj@norm1 <- as.list(mynormmatrix[,1])
+             NVTdataobj@norm2 <- as.list(mynormmatrix[,2])
            },
            RPKM={
              print ("RPKM normalization!")
@@ -152,8 +152,8 @@ NVTnormalize <- function(NVTdataobj) {
              mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
 
              mynormmatrix <- rpkm(mymatrix,long=NVTdataobj@length[,1])
-             NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
-             NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+             NVTdataobj@norm1 <- as.list(mynormmatrix[,1])
+             NVTdataobj@norm2 <- as.list(mynormmatrix[,2])
            },
            DEQ={
              print ("DESeq normalization!")
@@ -170,8 +170,8 @@ NVTnormalize <- function(NVTdataobj) {
 
              cds = newCountDataSet( mymatrix, condition )
              cds = estimateSizeFactors( cds )
-             NVTdataobj@norm1 <- as.data.frame(counts( cds, normalized=TRUE )[,1])
-             NVTdataobj@norm2 <- as.data.frame(counts( cds, normalized=TRUE )[,2])
+             NVTdataobj@norm1 <- as.list(counts( cds, normalized=TRUE )[,1])
+             NVTdataobj@norm2 <- as.list(counts( cds, normalized=TRUE )[,2])
            },
            TPM={
              print ("TPM normalization!")
@@ -215,8 +215,8 @@ NVTnormalize <- function(NVTdataobj) {
     )
 
     #set names
-    colnames(NVTdataobj@norm1)=names(NVTdataobj@exp1)
-    colnames(NVTdataobj@norm2)=names(NVTdataobj@exp2)
+    names(NVTdataobj@norm1)=names(NVTdataobj@exp1)
+    names(NVTdataobj@norm2)=names(NVTdataobj@exp2)
     rownames(NVTdataobj@norm1)=rownames(NVTdataobj@exp1)
     rownames(NVTdataobj@norm2)=rownames(NVTdataobj@exp2)
 
@@ -232,15 +232,15 @@ NVTplot <- function(NVTdataobj) {
      && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@method)
      && check_expression_list(NVTdataobj@norm1)  && check_expression_list(NVTdataobj@norm2)){
 
-    min <- 0
-    max <- max(log(NVTdataobj@norm1[,1]),log(NVTdataobj@norm2[,1]))
+    min <- min(log(NVTdataobj@norm1[[1]]),log(NVTdataobj@norm2[[1]]))
+    max <- max(log(NVTdataobj@norm1[[1]]),log(NVTdataobj@norm2[[1]]))
 
-    plot(log(NVTdataobj@norm1[,1]),log(NVTdataobj@norm2[,1]),main=paste("MA-plot", names(NVTdataobj@norm1),"vs.",names(NVTdataobj@norm2)),
+    plot(log(NVTdataobj@norm1),log(NVTdataobj@norm2),main=paste("MA-plot", names(NVTdataobj@norm1),"vs.",names(NVTdataobj@norm2)),
          xlab=paste("log( normalized expression",names(NVTdataobj@norm1),")"),ylab=paste("log( normalized expression",names(NVTdataobj@norm2),")")
-         ,pch=20,col="grey",xlim=c(min, max),ylim=c(min, max))
+         ,pch=20,col=rgb(193,205,205,90,maxColorValue=255),xlim=c(min, max),ylim=c(min, max))
 
-    m1 <- log(NVTdataobj@norm1[NVTdataobj@hklist,])
-    m2 <- log(NVTdataobj@norm2[NVTdataobj@hklist,])
+    m1 <- log(NVTdataobj@norm1[NVTdataobj@hklist])
+    m2 <- log(NVTdataobj@norm2[NVTdataobj@hklist])
 
     points(m1,m2,col="blue",pch=19)
 

@@ -24,20 +24,20 @@ setClass(
   Class="NVTdata",
   representation=representation(
     method="character",
-    exp1="data.frame",
-    exp2="data.frame",
+    exp1="list",
+    exp2="list",
     hklist="character",
-    norm1="data.frame",
-    norm2="data.frame",
-    length="data.frame"
+    norm1="list",
+    norm2="list",
+    length="list"
     ),
   prototype=prototype(
     method="N",
-    exp1=data.frame(),
-    exp2=data.frame(),
+    exp1=list(),
+    exp2=list(),
     hklist=character(),
-    norm1=data.frame(),
-    norm2=data.frame(),
-    length=data.frame()
+    norm1=list(),
+    norm2=list(),
+    length=list()
   )
 )
