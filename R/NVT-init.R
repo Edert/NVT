@@ -16,18 +16,17 @@ NVTinit <- function(hkgene_list, exp_list1, exp_list2, method, length){
   if (missing('method')){
     stop("No method specified!")
   }
+
   #length missing
   if (missing('length')){
     if(check_expression_list(exp_list1) && check_expression_list(exp_list2) && check_hkgene_list(hkgene_list) && check_method(method)) {
-      NVTData = return(new("NVTdata",exp1=exp_list1,exp2=exp_list2,hklist=hkgene_list,method=method))
-      return(NVTData)
+      return(new("NVTdata",exp1=exp_list1,exp2=exp_list2,hklist=hkgene_list,method=method))
     }
   }
 
   #all here add length
   if(check_expression_list(exp_list1) && check_expression_list(exp_list2) && check_hkgene_list(hkgene_list) && check_method(method)) {
-    NVTData = return(new("NVTdata",exp1=exp_list1,exp2=exp_list2,hklist=hkgene_list,method=method,length=length))
-    return(NVTData)
+    return(new("NVTdata",exp1=exp_list1,exp2=exp_list2,hklist=hkgene_list,method=method,length=length))
   }
 }
 
@@ -50,8 +49,8 @@ NVTnormalize <- function(NVTdataobj) {
              ci2 <- NVTdataobj@exp2[,1]
              N2 <- sum(ci2)
              m=mean(c(N1,N2))
-             NVTdataobj@norm1 <-  as.list(ci1/(N1+N2)*m)
-             NVTdataobj@norm2 <-  as.list(ci2/(N1+N2)*m)
+             NVTdataobj@norm1 <-  as.data.frame(ci1/(N1+N2)*m)
+             NVTdataobj@norm2 <-  as.data.frame(ci2/(N1+N2)*m)
            },
            Med={
              print ("Median normalization!")
@@ -61,8 +60,8 @@ NVTnormalize <- function(NVTdataobj) {
              ci2 <- NVTdataobj@exp2[,1]
              N2 <- median(ci2)
              m=mean(c(N1,N2))
-             NVTdataobj@norm1 <-  as.list(ci1/(N1+N2)*m)
-             NVTdataobj@norm2 <-  as.list(ci2/(N1+N2)*m)
+             NVTdataobj@norm1 <-  as.data.frame(ci1/(N1+N2)*m)
+             NVTdataobj@norm2 <-  as.data.frame(ci2/(N1+N2)*m)
 
            },
            TMM={
@@ -72,8 +71,8 @@ NVTnormalize <- function(NVTdataobj) {
              mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
 
              mynormmatrix <- tmm(mymatrix)
-             NVTdataobj@norm1 <- as.list(mynormmatrix[,1])
-             NVTdataobj@norm2 <- as.list(mynormmatrix[,2])
+             NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
+             NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
            },
            UQ={
              print ("Upper Quartile normalization!")
@@ -83,8 +82,8 @@ NVTnormalize <- function(NVTdataobj) {
              ci2 <- NVTdataobj@exp2[,1]
              N2 <- quantile(ci2, 0.75)
              m=mean(c(N1,N2))
-             NVTdataobj@norm1 <- as.list(ci1/(N1+N2)*m)
-             NVTdataobj@norm2 <- as.list(ci2/(N1+N2)*m)
+             NVTdataobj@norm1 <- as.data.frame(ci1/(N1+N2)*m)
+             NVTdataobj@norm2 <- as.data.frame(ci2/(N1+N2)*m)
            },
            UQ2={
              print ("Upper Quartile normalization!")
@@ -93,8 +92,8 @@ NVTnormalize <- function(NVTdataobj) {
              mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
 
              mynormmatrix <- uqua(mymatrix)
-             NVTdataobj@norm1 <- as.list(mynormmatrix[,1])
-             NVTdataobj@norm2 <- as.list(mynormmatrix[,2])
+             NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
+             NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
            },
            Q={
              print ("Quantile normalization!")
@@ -102,8 +101,8 @@ NVTnormalize <- function(NVTdataobj) {
 
              mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
              mynormmatrix <- normalizeBetweenArrays(mymatrix,"quantile")
-             NVTdataobj@norm1 <- as.list(mynormmatrix[,1])
-             NVTdataobj@norm2 <- as.list(mynormmatrix[,2])
+             NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
+             NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
            },
            RPKM={
              print ("RPKM normalization!")
@@ -116,12 +115,12 @@ NVTnormalize <- function(NVTdataobj) {
 
              ci1 <- NVTdataobj@exp1[,1]
              N1 <- sum(ci1)
-             NVTdataobj@norm1 <- ci1/(N1/10^9)/(li)
+             NVTdataobj@norm1 <- as.data.frame(ci1/(N1/10^9)/(li))
              #NVTdataobj@norm1 <- 10^9*ci1/li*N1
 
              ci2 <- NVTdataobj@exp2[,1]
              N2 <- sum(ci2)
-             NVTdataobj@norm2 <- ci2/(N1/10^9)/(li)
+             NVTdataobj@norm2 <- as.data.frame(ci2/(N1/10^9)/(li))
              #NVTdataobj@norm2 <- 10^9*ci2/li*N2
            },
            RPM={
@@ -135,11 +134,11 @@ NVTnormalize <- function(NVTdataobj) {
 
              ci1 <- NVTdataobj@exp1[,1]
              N1 <- sum(ci1)
-             NVTdataobj@norm1 <- ci1/(N1/10^9)
+             NVTdataobj@norm1 <- as.data.frame(ci1/(N1/10^9))
 
              ci2 <- NVTdataobj@exp2[,1]
              N2 <- sum(ci2)
-             NVTdataobj@norm1 <- ci2/(N1/10^9)
+             NVTdataobj@norm2 <- as.data.frame(ci2/(N1/10^9))
            },
            RPKM2={
              print ("RPKM normalization!")
@@ -152,8 +151,8 @@ NVTnormalize <- function(NVTdataobj) {
              mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
 
              mynormmatrix <- rpkm(mymatrix,long=NVTdataobj@length[,1])
-             NVTdataobj@norm1 <- as.list(mynormmatrix[,1])
-             NVTdataobj@norm2 <- as.list(mynormmatrix[,2])
+             NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
+             NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
            },
            DEQ={
              print ("DESeq normalization!")
@@ -170,8 +169,8 @@ NVTnormalize <- function(NVTdataobj) {
 
              cds = newCountDataSet( mymatrix, condition )
              cds = estimateSizeFactors( cds )
-             NVTdataobj@norm1 <- as.list(counts( cds, normalized=TRUE )[,1])
-             NVTdataobj@norm2 <- as.list(counts( cds, normalized=TRUE )[,2])
+             NVTdataobj@norm1 <- as.data.frame(counts( cds, normalized=TRUE )[,1])
+             NVTdataobj@norm2 <- as.data.frame(counts( cds, normalized=TRUE )[,2])
            },
            TPM={
              print ("TPM normalization!")
@@ -188,22 +187,22 @@ NVTnormalize <- function(NVTdataobj) {
              #RPKM1 <- 10^9*ci1/li*N1
              #NVTdataobj@norm1 <- ml*RPKM1/sum(RPKM1)*10^3
              RPK1 <- ci1/(li/1000)
-             NVTdataobj@norm1 <- RPK1/(sum(RPK1)/10^6)
+             NVTdataobj@norm1 <- as.data.frame(RPK1/(sum(RPK1)/10^6))
 
              ci2 <- NVTdataobj@exp2[,1]
              N2 <- sum(ci2)
              #RPKM2 <- 10^9*ci2/li*N2
              #NVTdataobj@norm2 <- ml*RPKM2/sum(RPKM2)*10^3
              RPK2 <- ci2/(li/1000)
-             NVTdataobj@norm2 <- RPK2/(sum(RPK2)/10^6)
+             NVTdataobj@norm2 <- as.data.frame(RPK2/(sum(RPK2)/10^6))
            },
            G={
              print ("Normalization be given gene-set!")
               print(NVTdataobj@hklist)
              gn1 <- mean(NVTdataobj@exp1[NVTdataobj@hklist,])
              gn2 <- mean(NVTdataobj@exp2[NVTdataobj@hklist,])
-             NVTdataobj@norm1 <- NVTdataobj@exp1/gn1
-             NVTdataobj@norm2 <- NVTdataobj@exp2/gn2
+             NVTdataobj@norm1 <- as.data.frame(NVTdataobj@exp1/gn1)
+             NVTdataobj@norm2 <- as.data.frame(NVTdataobj@exp2/gn2)
 
            },
            {
@@ -232,17 +231,26 @@ NVTplot <- function(NVTdataobj) {
      && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@method)
      && check_expression_list(NVTdataobj@norm1)  && check_expression_list(NVTdataobj@norm2)){
 
-    min <- min(log(NVTdataobj@norm1[[1]]),log(NVTdataobj@norm2[[1]]))
-    max <- max(log(NVTdataobj@norm1[[1]]),log(NVTdataobj@norm2[[1]]))
+    l1 <- log(NVTdataobj@norm1[[1]])
+    l2 <- log(NVTdataobj@norm2[[1]])
+    names(l1) <- rownames(NVTdataobj@norm1)
+    names(l2) <- rownames(NVTdataobj@norm2)
 
-    plot(log(NVTdataobj@norm1),log(NVTdataobj@norm2),main=paste("MA-plot", names(NVTdataobj@norm1),"vs.",names(NVTdataobj@norm2)),
-         xlab=paste("log( normalized expression",names(NVTdataobj@norm1),")"),ylab=paste("log( normalized expression",names(NVTdataobj@norm2),")")
-         ,pch=20,col=rgb(193,205,205,90,maxColorValue=255),xlim=c(min, max),ylim=c(min, max))
+    #clean up
+    l <- cbind(l1,l2)
+    idx <- apply(l, 1, function(x) all(!is.infinite(x)))
+    l <- l[idx,]
+    idx <- apply(l, 1, function(x) all(!is.na(x)))
+    l <- l[idx,]
+    idx <- apply(l, 1, function(x) all(!is.nan(x)))
+    l <- l[idx,]
 
-    m1 <- log(NVTdataobj@norm1[NVTdataobj@hklist])
-    m2 <- log(NVTdataobj@norm2[NVTdataobj@hklist])
+    min <- min(l)
+    max <- max(l)
 
-    points(m1,m2,col="blue",pch=19)
+    #only houskeeping genes
+    m1 <- l1[NVTdataobj@hklist]
+    m2 <- l2[NVTdataobj@hklist]
 
     #clean up for lm
     m <- cbind(m1,m2)
@@ -252,6 +260,16 @@ NVTplot <- function(NVTdataobj) {
     m <- m[idx,]
     idx <- apply(m, 1, function(x) all(!is.nan(x)))
     m <- m[idx,]
+
+
+    plot(l1,l2,main=paste("MA-plot", names(NVTdataobj@norm1),"vs.",names(NVTdataobj@norm2)),
+         xlab=paste("log( normalized expression",names(NVTdataobj@norm1),")"),
+         ylab=paste("log( normalized expression",names(NVTdataobj@norm2),")")
+         ,pch=20,col=rgb(193,205,205,90,maxColorValue=255),xlim=c(min, max),ylim=c(min, max))
+    mtext(paste(NVTdataobj@method,"normalized"))
+
+    points(m1,m2,col="blue",pch=19)
+
 
     fm <- lm(m[,2] ~ m[,1])
 
@@ -270,8 +288,8 @@ NVTpearson <- function(NVTdataobj) {
      && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@method)
      && check_expression_list(NVTdataobj@norm1)  && check_expression_list(NVTdataobj@norm2)){
 
-    m1 <- NVTdataobj@norm1[NVTdataobj@hklist,]
-    m2 <- NVTdataobj@norm2[NVTdataobj@hklist,]
+    m1 <- NVTdataobj@norm1[1][NVTdataobj@hklist,]
+    m2 <- NVTdataobj@norm2[1][NVTdataobj@hklist,]
 
     pearson <- cor(m1,m2,method="pearson")
     return(pearson)
@@ -280,6 +298,25 @@ NVTpearson <- function(NVTdataobj) {
     stop("Not a valid NVTdata object with normalized values!")
   }
 }
+
+#run all tests and print sorted pearson correlations
+NVTtestall <- function(NVTdataobj) {
+  tmp <- NVTdataobj
+  pv <- vector()
+
+  #test all methods and extract pearson correlation
+  for (n in method_v) {
+    tmp@method <- n
+    tmpnorm <- NVTnormalize(tmp)
+    p <- NVTpearson(tmpnorm)
+    pv <-append(pv,p)
+  }
+  pearson <- as.data.frame(cbind(method_v,pv))
+
+
+  return(pearson[order(pearson$pv,decreasing = T),])
+}
+
 
 #checks
 check_hkgene_list <- function(hkgene_list) {
