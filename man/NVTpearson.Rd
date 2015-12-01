@@ -16,9 +16,9 @@ Pearson correlation of the normalized housekeeping genes between the samples
 Calculate the pearson correclation of the housekeeping genes of an initialized and normalized NVTobject
 }
 \examples{
-myexp1 = read.table("exp1.txt")
-myexp2 = read.table("exp2.txt")
-mylen = read.table("length.txt")
+myexp1 = read.table("data/exp1.txt")
+myexp2 = read.table("data/exp2.txt")
+mylen = read.table("data/length.txt")
 mylist1=c('gene1','gene2','gene3','gene10')
 
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")

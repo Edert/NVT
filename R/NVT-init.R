@@ -52,9 +52,9 @@ NVTinit <- function(hkgene_list, exp_list1, exp_list2, method, length){
 #'@param NVTdataobj A previously initialized NVTobject
 #'@return A normalized NVTobject
 #'@examples
-#'myexp1 = read.table("exp1.txt")
-#'myexp2 = read.table("exp2.txt")
-#'mylen = read.table("length.txt")
+#'myexp1 = read.table("data/exp1.txt")
+#'myexp2 = read.table("data/exp2.txt")
+#'mylen = read.table("data/length.txt")
 #'mylist1=c('gene1','gene2','gene3','gene10')
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
@@ -96,12 +96,20 @@ NVTnormalize <- function(NVTdataobj) {
            TMM={
              print ("Trimmed Mean of M-values normalization!")
 
-             library("NOISeq")
-             mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
+             if (requireNamespace("NOISeq", quietly = TRUE)) {
+               #library("NOISeq")
+               mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
 
-             mynormmatrix <- tmm(mymatrix)
-             NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
-             NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+               mynormmatrix <- tmm(mymatrix)
+               NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
+               NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+             } else {
+
+               print ("NOISeq package not available, data not normalized!")
+               NVTdataobj@norm1 <- NVTdataobj@exp1
+               NVTdataobj@norm2 <- NVTdataobj@exp2
+             }
+
            },
            UQ={
              print ("Upper Quartile normalization!")
@@ -125,21 +133,38 @@ NVTnormalize <- function(NVTdataobj) {
            UQ2={
              print ("Upper Quartile normalization (from NOISeq)!")
 
-             library("NOISeq")
-             mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
+             if (requireNamespace("NOISeq", quietly = TRUE)) {
+               #library("NOISeq")
+               mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
 
-             mynormmatrix <- uqua(mymatrix, long = 1000, lc = 0, k = 0)
-             NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
-             NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+               mynormmatrix <- uqua(mymatrix, long = 1000, lc = 0, k = 0)
+               NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
+               NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+             } else {
+
+               print ("NOISeq package not available, data not normalized!")
+               NVTdataobj@norm1 <- NVTdataobj@exp1
+               NVTdataobj@norm2 <- NVTdataobj@exp2
+             }
+
            },
            Q={
              print ("Quantile normalization!")
-             library("limma")
 
-             mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
-             mynormmatrix <- normalizeBetweenArrays(mymatrix,"quantile")
-             NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
-             NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+             if (requireNamespace("limma", quietly = TRUE)) {
+               #library("limma")
+
+               mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
+               mynormmatrix <- normalizeBetweenArrays(mymatrix,"quantile")
+               NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
+               NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+
+             } else {
+               print ("limma package not available, data not normalized!")
+               NVTdataobj@norm1 <- NVTdataobj@exp1
+               NVTdataobj@norm2 <- NVTdataobj@exp2
+             }
+
            },
            RPKM={
              print ("RPKM normalization!")
@@ -194,20 +219,29 @@ NVTnormalize <- function(NVTdataobj) {
            DEQ={
              print ("DESeq normalization!")
 
-             library("DESeq")
-             condition = factor( c( "untreated", "treated"))
+             if (requireNamespace("DESeq", quietly = TRUE)) {
+               #library("DESeq")
+               condition = factor( c( "untreated", "treated"))
 
-             if(is.integer(NVTdataobj@exp1) && is.integer(NVTdataobj@exp1) ){
-               mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
-             }else{
-                print ("Input counts are not integer, converting them!")
-                mymatrix <- as.matrix(cbind(as.integer(NVTdataobj@exp1[,1]),as.integer(NVTdataobj@exp2[,1])))
+               if(is.integer(NVTdataobj@exp1) && is.integer(NVTdataobj@exp1) ){
+                 mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
+               }else{
+                 print ("Input counts are not integer, converting them!")
+                 mymatrix <- as.matrix(cbind(as.integer(NVTdataobj@exp1[,1]),as.integer(NVTdataobj@exp2[,1])))
+               }
+
+               cds = newCountDataSet( mymatrix, condition )
+               cds = estimateSizeFactors( cds )
+               NVTdataobj@norm1 <- as.data.frame(counts( cds, normalized=TRUE )[,1])
+               NVTdataobj@norm2 <- as.data.frame(counts( cds, normalized=TRUE )[,2])
+
+             } else {
+
+               print ("DESeq package not available, data not normalized!")
+               NVTdataobj@norm1 <- NVTdataobj@exp1
+               NVTdataobj@norm2 <- NVTdataobj@exp2
              }
 
-             cds = newCountDataSet( mymatrix, condition )
-             cds = estimateSizeFactors( cds )
-             NVTdataobj@norm1 <- as.data.frame(counts( cds, normalized=TRUE )[,1])
-             NVTdataobj@norm2 <- as.data.frame(counts( cds, normalized=TRUE )[,2])
            },
            TPM={
              print ("TPM normalization!")
@@ -267,9 +301,9 @@ NVTnormalize <- function(NVTdataobj) {
 #'@param NVTdataobj A previously initialized and normalized NVTobject
 #'@return Plots the MA-plot with the housekeeping genes indicated
 #'@examples
-#'myexp1 = read.table("exp1.txt")
-#'myexp2 = read.table("exp2.txt")
-#'mylen = read.table("length.txt")
+#'myexp1 = read.table("data/exp1.txt")
+#'myexp2 = read.table("data/exp2.txt")
+#'mylen = read.table("data/length.txt")
 #'mylist1=c('gene1','gene2','gene3','gene10')
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
@@ -336,9 +370,9 @@ NVTplot <- function(NVTdataobj) {
 #'@param NVTdataobj A previously initialized and normalized NVTobject
 #'@return Pearson correlation of the normalized housekeeping genes between the samples
 #'@examples
-#'myexp1 = read.table("exp1.txt")
-#'myexp2 = read.table("exp2.txt")
-#'mylen = read.table("length.txt")
+#'myexp1 = read.table("data/exp1.txt")
+#'myexp2 = read.table("data/exp2.txt")
+#'mylen = read.table("data/length.txt")
 #'mylist1=c('gene1','gene2','gene3','gene10')
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
@@ -367,9 +401,9 @@ NVTpearson <- function(NVTdataobj) {
 #'@param NVTdataobj A previously initialzed and normalized NVTobject
 #'@return Sorted pearson correlations of the normalized housekeeping genes between the samples
 #'@examples
-#'myexp1 = read.table("exp1.txt")
-#'myexp2 = read.table("exp2.txt")
-#'mylen = read.table("length.txt")
+#'myexp1 = read.table("data/exp1.txt")
+#'myexp2 = read.table("data/exp2.txt")
+#'mylen = read.table("data/length.txt")
 #'mylist1=c('gene1','gene2','gene3','gene10')
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
@@ -381,7 +415,7 @@ NVTtestall <- function(NVTdataobj) {
 
   #test all methods and extract pearson correlation
   for (n in method_v) {
-    tmpNVT@method <- n
+    tmpNVT@norm_method <- n
     tmpnorm <- NVTnormalize(tmpNVT)
     p <- NVTpearson(tmpnorm)
     pv <-append(pv,p)
