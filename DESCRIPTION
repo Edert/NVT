@@ -6,6 +6,10 @@ Date: 2015-11-24
 Author: Thomas Eder
 Maintainer: Thomas Eder <Thomas.Eder@lbicr.lbg.ac.at>
 Description: This tool normalizes gene expression data from two sample and plots the results as MA-plots, indicating the previously set housekeeping genes and calculating their pearson correlation.
-License:
+License: GNU General Public License, version 3.0 (GPL-3.0)
 LazyData: TRUE
 RoxygenNote: 5.0.1
+
+limma https://www.bioconductor.org/packages/release/bioc/html/limma.html
+noiseq https://www.bioconductor.org/packages/release/bioc/html/NOISeq.html
+deseq http://www.bioconductor.org/packages/release/bioc/html/DESeq.html
