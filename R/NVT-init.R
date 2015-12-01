@@ -234,10 +234,10 @@ NVTnormalize <- function(NVTdataobj) {
                  mymatrix <- as.matrix(cbind(as.integer(NVTdataobj@exp1[,1]),as.integer(NVTdataobj@exp2[,1])))
                }
 
-               cds = newCountDataSet( mymatrix, condition )
-               cds = estimateSizeFactors( cds )
-               NVTdataobj@norm1 <- as.data.frame(counts( cds, normalized=TRUE )[,1])
-               NVTdataobj@norm2 <- as.data.frame(counts( cds, normalized=TRUE )[,2])
+               cds = DESeq::newCountDataSet( mymatrix, condition )
+               cds = DESeq::estimateSizeFactors( cds )
+               NVTdataobj@norm1 <- as.data.frame(DESeq::counts( cds, normalized=TRUE )[,1])
+               NVTdataobj@norm2 <- as.data.frame(DESeq::counts( cds, normalized=TRUE )[,2])
 
              } else {
 
@@ -383,7 +383,7 @@ NVTplot <- function(NVTdataobj) {
 #'data(mylen)
 #'mylist1=c("CT462","CT115","CT045","CT678")
 #'
-#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM")
 #'mynorm <- NVTnormalize(mynvt)
 #'
 #'NVTpearson(mynorm)
@@ -416,7 +416,7 @@ NVTpearson <- function(NVTdataobj) {
 #'data(mylen)
 #'mylist1=c("CT462","CT115","CT045","CT678")
 #'
-#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N",mylen)
 #'
 #'NVTtestall(mynvt)
 NVTtestall <- function(NVTdataobj) {
