@@ -16,9 +16,10 @@ Plots the MA-plot with the housekeeping genes indicated
 Plot the MA-plot of a NVTobject
 }
 \examples{
-myexp1 = read.table("data/exp1.txt")
-myexp2 = read.table("data/exp2.txt")
-mylen = read.table("data/length.txt")
+library("NVT")
+data(myexp1)
+data(myexp2)
+data(mylen)
 mylist1=c('gene1','gene2','gene3','gene10')
 
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")

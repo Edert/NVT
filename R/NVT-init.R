@@ -11,9 +11,10 @@ method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPM","DEQ","TPM","G")
 #'@param length A data frame of length per gene
 #'@return A NVTobject ready for normalization
 #'@examples
-#'myexp1 = read.table("exp1.txt")
-#'myexp2 = read.table("exp2.txt")
-#'mylen = read.table("length.txt")
+#'library("NVT")
+#'data(myexp1)
+#'data(myexp2)
+#'data(mylen)
 #'mylist1=c('gene1','gene2','gene3','gene10')
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
@@ -52,9 +53,10 @@ NVTinit <- function(hkgene_list, exp_list1, exp_list2, method, length){
 #'@param NVTdataobj A previously initialized NVTobject
 #'@return A normalized NVTobject
 #'@examples
-#'myexp1 = read.table("data/exp1.txt")
-#'myexp2 = read.table("data/exp2.txt")
-#'mylen = read.table("data/length.txt")
+#'library("NVT")
+#'data(myexp1)
+#'data(myexp2)
+#'data(mylen)
 #'mylist1=c('gene1','gene2','gene3','gene10')
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
@@ -301,9 +303,10 @@ NVTnormalize <- function(NVTdataobj) {
 #'@param NVTdataobj A previously initialized and normalized NVTobject
 #'@return Plots the MA-plot with the housekeeping genes indicated
 #'@examples
-#'myexp1 = read.table("data/exp1.txt")
-#'myexp2 = read.table("data/exp2.txt")
-#'mylen = read.table("data/length.txt")
+#'library("NVT")
+#'data(myexp1)
+#'data(myexp2)
+#'data(mylen)
 #'mylist1=c('gene1','gene2','gene3','gene10')
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
@@ -370,9 +373,10 @@ NVTplot <- function(NVTdataobj) {
 #'@param NVTdataobj A previously initialized and normalized NVTobject
 #'@return Pearson correlation of the normalized housekeeping genes between the samples
 #'@examples
-#'myexp1 = read.table("data/exp1.txt")
-#'myexp2 = read.table("data/exp2.txt")
-#'mylen = read.table("data/length.txt")
+#'library("NVT")
+#'data(myexp1)
+#'data(myexp2)
+#'data(mylen)
 #'mylist1=c('gene1','gene2','gene3','gene10')
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
@@ -401,9 +405,10 @@ NVTpearson <- function(NVTdataobj) {
 #'@param NVTdataobj A previously initialzed and normalized NVTobject
 #'@return Sorted pearson correlations of the normalized housekeeping genes between the samples
 #'@examples
-#'myexp1 = read.table("data/exp1.txt")
-#'myexp2 = read.table("data/exp2.txt")
-#'mylen = read.table("data/length.txt")
+#'library("NVT")
+#'data(myexp1)
+#'data(myexp2)
+#'data(mylen)
 #'mylist1=c('gene1','gene2','gene3','gene10')
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
