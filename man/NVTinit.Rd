@@ -4,7 +4,7 @@
 \alias{NVTinit}
 \title{initialize and load input dato into NVTobject}
 \usage{
-NVTinit(hkgene_list, exp_list1, exp_list2, method, length)
+NVTinit(hkgene_list, exp_list1, exp_list2, nmethod, len)
 }
 \arguments{
 \item{hkgene_list}{A list of housekeeping-genes}
@@ -13,7 +13,7 @@ NVTinit(hkgene_list, exp_list1, exp_list2, method, length)
 
 \item{exp_list2}{Second data frame of expression values per gene}
 
-\item{method}{The normalization method to us [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G]}
+\item{nmethod}{The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G]}
 
 \item{length}{A data frame of length per gene}
 }
@@ -28,7 +28,7 @@ library("NVT")
 data(myexp1)
 data(myexp2)
 data(mylen)
-mylist1=c('gene1','gene2','gene3','gene10')
+mylist1=c("CT462","CT115","CT045","CT678")
 
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 mynvt2 <- NVTinit(mylist1,myexp1,myexp2,"RPKM",mylen)

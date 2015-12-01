@@ -7,7 +7,7 @@ method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPM","DEQ","TPM","G")
 #'@param hkgene_list A list of housekeeping-genes
 #'@param exp_list1 The first data frame of expression values per gene
 #'@param exp_list2 Second data frame of expression values per gene
-#'@param method The normalization method to us [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G]
+#'@param nmethod The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G]
 #'@param length A data frame of length per gene
 #'@return A NVTobject ready for normalization
 #'@examples
@@ -15,11 +15,11 @@ method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPM","DEQ","TPM","G")
 #'data(myexp1)
 #'data(myexp2)
 #'data(mylen)
-#'mylist1=c('gene1','gene2','gene3','gene10')
+#'mylist1=c("CT462","CT115","CT045","CT678")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 #'mynvt2 <- NVTinit(mylist1,myexp1,myexp2,"RPKM",mylen)
-NVTinit <- function(hkgene_list, exp_list1, exp_list2, method, length){
+NVTinit <- function(hkgene_list, exp_list1, exp_list2, nmethod, len){
 
   if (missing('hkgene_list')){
     stop("No housekeeping-gene list specified!")
@@ -30,20 +30,20 @@ NVTinit <- function(hkgene_list, exp_list1, exp_list2, method, length){
   if (missing('exp_list2')){
     stop("No second expression list specified!")
   }
-  if (missing('method')){
+  if (missing('nmethod')){
     stop("No method specified!")
   }
 
   #length missing
-  if (missing('length')){
-    if(check_expression_list(exp_list1) && check_expression_list(exp_list2) && check_hkgene_list(hkgene_list) && check_method(method)) {
-      return(new("NVTdata",exp1=exp_list1,exp2=exp_list2,hklist=hkgene_list,method=method))
+  if (missing('len')){
+    if(check_expression_list(exp_list1) && check_expression_list(exp_list2) && check_hkgene_list(hkgene_list) && check_method(nmethod)) {
+      return(new("NVTdata",exp1=exp_list1,exp2=exp_list2,hklist=hkgene_list,norm_method=nmethod))
     }
   }
 
   #all here add length
-  if(check_expression_list(exp_list1) && check_expression_list(exp_list2) && check_hkgene_list(hkgene_list) && check_method(method)) {
-    return(new("NVTdata",exp1=exp_list1,exp2=exp_list2,hklist=hkgene_list,method=method,length=length))
+  if(check_expression_list(exp_list1) && check_expression_list(exp_list2) && check_hkgene_list(hkgene_list) && check_method(nmethod)) {
+    return(new("NVTdata",exp1=exp_list1,exp2=exp_list2,hklist=hkgene_list,norm_method=nmethod,length=len))
   }
 }
 
@@ -57,15 +57,17 @@ NVTinit <- function(hkgene_list, exp_list1, exp_list2, method, length){
 #'data(myexp1)
 #'data(myexp2)
 #'data(mylen)
-#'mylist1=c('gene1','gene2','gene3','gene10')
+#'mylist1=c("CT462","CT115","CT045","CT678")
 #'
-#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N",mylen)
 #'
 #'mynorm <- NVTnormalize(mynvt)
 NVTnormalize <- function(NVTdataobj) {
 
-  if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2) && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@method)){
-    switch(NVTdataobj@method,
+  if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
+     && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
+     && exists_hkgene_list(NVTdataobj,NVTdataobj@hklist)){
+    switch(NVTdataobj@norm_method,
            N={
              print ("No normalization!")
 
@@ -102,7 +104,7 @@ NVTnormalize <- function(NVTdataobj) {
                #library("NOISeq")
                mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
 
-               mynormmatrix <- tmm(mymatrix)
+               mynormmatrix <- NOISeq::tmm(mymatrix)
                NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
                NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
              } else {
@@ -139,7 +141,7 @@ NVTnormalize <- function(NVTdataobj) {
                #library("NOISeq")
                mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
 
-               mynormmatrix <- uqua(mymatrix, long = 1000, lc = 0, k = 0)
+               mynormmatrix <- NOISeq::uqua(mymatrix, long = 1000, lc = 0, k = 0)
                NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
                NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
              } else {
@@ -157,7 +159,7 @@ NVTnormalize <- function(NVTdataobj) {
                #library("limma")
 
                mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
-               mynormmatrix <- normalizeBetweenArrays(mymatrix,"quantile")
+               mynormmatrix <- limma::normalizeBetweenArrays(mymatrix,"quantile")
                NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
                NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
 
@@ -271,7 +273,8 @@ NVTnormalize <- function(NVTdataobj) {
            },
            G={
              print ("Normalization be given gene-set!")
-              print(NVTdataobj@hklist)
+             print(NVTdataobj@hklist)
+
              gn1 <- mean(NVTdataobj@exp1[NVTdataobj@hklist,])
              gn2 <- mean(NVTdataobj@exp2[NVTdataobj@hklist,])
              NVTdataobj@norm1 <- as.data.frame(NVTdataobj@exp1/gn1)
@@ -307,7 +310,7 @@ NVTnormalize <- function(NVTdataobj) {
 #'data(myexp1)
 #'data(myexp2)
 #'data(mylen)
-#'mylist1=c('gene1','gene2','gene3','gene10')
+#'mylist1=c("CT462","CT115","CT045","CT678")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 #'mynorm <- NVTnormalize(mynvt)
@@ -315,8 +318,9 @@ NVTnormalize <- function(NVTdataobj) {
 #'NVTplot(mynorm)
 NVTplot <- function(NVTdataobj) {
   if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
-     && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@method)
-     && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)){
+     && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
+     && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)
+     && exists_hkgene_list(NVTdataobj,NVTdataobj@hklist)){
 
     l1 <- log(NVTdataobj@norm1[[1]])
     l2 <- log(NVTdataobj@norm2[[1]])
@@ -352,7 +356,7 @@ NVTplot <- function(NVTdataobj) {
          xlab=paste("log( normalized expression",names(NVTdataobj@norm1),")"),
          ylab=paste("log( normalized expression",names(NVTdataobj@norm2),")")
          ,pch=20,col=rgb(193,205,205,90,maxColorValue=255),xlim=c(min, max),ylim=c(min, max))
-    mtext(paste(NVTdataobj@method,"normalized"))
+    mtext(paste(NVTdataobj@norm_method,"normalized"))
 
     points(m1,m2,col="blue",pch=19)
 
@@ -377,7 +381,7 @@ NVTplot <- function(NVTdataobj) {
 #'data(myexp1)
 #'data(myexp2)
 #'data(mylen)
-#'mylist1=c('gene1','gene2','gene3','gene10')
+#'mylist1=c("CT462","CT115","CT045","CT678")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 #'mynorm <- NVTnormalize(mynvt)
@@ -385,8 +389,9 @@ NVTplot <- function(NVTdataobj) {
 #'NVTpearson(mynorm)
 NVTpearson <- function(NVTdataobj) {
   if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
-     && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@method)
-     && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)){
+     && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
+     && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)
+     && exists_hkgene_list(NVTdataobj,NVTdataobj@hklist)){
 
     m1 <- NVTdataobj@norm1[1][NVTdataobj@hklist,]
     m2 <- NVTdataobj@norm2[1][NVTdataobj@hklist,]
@@ -409,7 +414,7 @@ NVTpearson <- function(NVTdataobj) {
 #'data(myexp1)
 #'data(myexp2)
 #'data(mylen)
-#'mylist1=c('gene1','gene2','gene3','gene10')
+#'mylist1=c("CT462","CT115","CT045","CT678")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 #'
@@ -443,6 +448,21 @@ check_hkgene_list <- function(hkgene_list) {
   }
 }
 
+#'Check if housekeeping gene list is valid
+#'
+#'@param hkgene_list Housekeeping gene list
+#'@return true or false
+exists_hkgene_list <- function(NVTobject,hkgene_list) {
+  for ( gene in hkgene_list ) {
+    if((gene %in% rownames(NVTobject@exp1)) && (gene %in% rownames(NVTobject@exp2))){
+
+    }else{
+      stop(paste("Housekeeping-gene",gene,"is not present in expression list!"))
+    }
+  }
+  return(TRUE)
+}
+
 #'Check expression gene list
 #'
 #'@param exp_list Expression gene list
@@ -474,10 +494,10 @@ check_norm_list <- function(norm_list) {
 
 #'Check normalization method
 #'
-#'@param method Normalization method
+#'@param norm_method Normalization method
 #'@return true or false
-check_method <- function(method) {
-  if( method %in% method_v ){
+check_method <- function(norm_method) {
+  if( norm_method %in% method_v ){
     return(TRUE)
   }else{
     stop("Unknown method specified!")

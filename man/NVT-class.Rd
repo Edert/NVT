@@ -11,7 +11,7 @@ A class with all required NVTdata
 }
 \section{Objects from the Class}{
  Objects can be created by calls of the
-form \code{new("NVT", ...)}.
+form \code{new("NVTdata", ...)}.
 }
 \examples{
 

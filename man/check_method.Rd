@@ -4,10 +4,10 @@
 \alias{check_method}
 \title{Check normalization method}
 \usage{
-check_method(method)
+check_method(norm_method)
 }
 \arguments{
-\item{method}{Normalization method}
+\item{norm_method}{Normalization method}
 }
 \value{
 true or false

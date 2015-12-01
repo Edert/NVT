@@ -20,7 +20,7 @@ library("NVT")
 data(myexp1)
 data(myexp2)
 data(mylen)
-mylist1=c('gene1','gene2','gene3','gene10')
+mylist1=c("CT462","CT115","CT045","CT678")
 
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 mynorm <- NVTnormalize(mynvt)
