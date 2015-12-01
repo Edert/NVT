@@ -1,6 +1,3 @@
 limma https://www.bioconductor.org/packages/release/bioc/html/limma.html
 noiseq https://www.bioconductor.org/packages/release/bioc/html/NOISeq.html
 deseq http://www.bioconductor.org/packages/release/bioc/html/DESeq.html
-
-ebseq http://www.bioconductor.org/packages/release/bioc/html/EBSeq.html ?
-poissonseq  https://cran.r-project.org/web/packages/PoissonSeq/index.html ?
