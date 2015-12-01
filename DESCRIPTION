@@ -9,4 +9,5 @@ Description: This tool normalizes gene expression data from two sample and plots
 License: GNU General Public License, version 3.0 (GPL-3.0)
 LazyData: TRUE
 RoxygenNote: 5.0.1
-Suggests: limma, NOISeq, DESeq2
+Suggests:
+Requires: limma, NOISeq, DESeq2
