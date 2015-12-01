@@ -2,7 +2,22 @@
 method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPM","DEQ","TPM","G")
 #"RPKM2",
 
-#initialize and load input
+#'initialize and load input dato into NVTobject
+#'
+#'@param hkgene_list A list of housekeeping-genes
+#'@param exp_list1 The first data frame of expression values per gene
+#'@param exp_list2 Second data frame of expression values per gene
+#'@param method The normalization method to us [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G]
+#'@param length A data frame of length per gene
+#'@return A NVTobject ready for normalization
+#'@examples
+#'myexp1 = read.table("exp1.txt")
+#'myexp2 = read.table("exp2.txt")
+#'mylen = read.table("length.txt")
+#'mylist1=c('gene1','gene2','gene3','gene10')
+#'
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
+#'mynvt2 <- NVTinit(mylist1,myexp1,myexp2,"RPKM",mylen)
 NVTinit <- function(hkgene_list, exp_list1, exp_list2, method, length){
 
   if (missing('hkgene_list')){
@@ -31,7 +46,20 @@ NVTinit <- function(hkgene_list, exp_list1, exp_list2, method, length){
   }
 }
 
-#normalize
+#'Normalize a NVTobject,
+#'the normalization method has been set already in the initialization step
+#'
+#'@param NVTdataobj A previously initialized NVTobject
+#'@return A normalized NVTobject
+#'@examples
+#'myexp1 = read.table("exp1.txt")
+#'myexp2 = read.table("exp2.txt")
+#'mylen = read.table("length.txt")
+#'mylist1=c('gene1','gene2','gene3','gene10')
+#'
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
+#'
+#'mynorm <- NVTnormalize(mynvt)
 NVTnormalize <- function(NVTdataobj) {
 
   if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2) && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@method)){
@@ -234,7 +262,20 @@ NVTnormalize <- function(NVTdataobj) {
   }
 }
 
-#plot data
+#'Plot the MA-plot of a NVTobject
+#'
+#'@param NVTdataobj A previously initialized and normalized NVTobject
+#'@return Plots the MA-plot with the housekeeping genes indicated
+#'@examples
+#'myexp1 = read.table("exp1.txt")
+#'myexp2 = read.table("exp2.txt")
+#'mylen = read.table("length.txt")
+#'mylist1=c('gene1','gene2','gene3','gene10')
+#'
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
+#'mynorm <- NVTnormalize(mynvt)
+#'
+#'NVTplot(mynorm)
 NVTplot <- function(NVTdataobj) {
   if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
      && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@method)
@@ -290,7 +331,20 @@ NVTplot <- function(NVTdataobj) {
   }
 }
 
-#calculate pearson correclation of housekeeping genes
+#'Calculate the pearson correclation of the housekeeping genes of an initialized and normalized NVTobject
+#'
+#'@param NVTdataobj A previously initialized and normalized NVTobject
+#'@return Pearson correlation of the normalized housekeeping genes between the samples
+#'@examples
+#'myexp1 = read.table("exp1.txt")
+#'myexp2 = read.table("exp2.txt")
+#'mylen = read.table("length.txt")
+#'mylist1=c('gene1','gene2','gene3','gene10')
+#'
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
+#'mynorm <- NVTnormalize(mynvt)
+#'
+#'NVTpearson(mynorm)
 NVTpearson <- function(NVTdataobj) {
   if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
      && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@method)
@@ -307,7 +361,20 @@ NVTpearson <- function(NVTdataobj) {
   }
 }
 
-#run all tests and print sorted pearson correlations
+
+#'Calculate the pearson correclation of the housekeeping genes of an initialized NVTobject for all normalization methods
+#'
+#'@param NVTdataobj A previously initialzed and normalized NVTobject
+#'@return Sorted pearson correlations of the normalized housekeeping genes between the samples
+#'@examples
+#'myexp1 = read.table("exp1.txt")
+#'myexp2 = read.table("exp2.txt")
+#'mylen = read.table("length.txt")
+#'mylist1=c('gene1','gene2','gene3','gene10')
+#'
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
+#'
+#'NVTtestall(mynvt)
 NVTtestall <- function(NVTdataobj) {
   tmpNVT <- NVTdataobj
   pv <- vector()
@@ -325,7 +392,10 @@ NVTtestall <- function(NVTdataobj) {
 }
 
 
-#checks
+#'Check housekeeping gene list
+#'
+#'@param hkgene_list Housekeeping gene list
+#'@return true or false
 check_hkgene_list <- function(hkgene_list) {
   if( is.character(hkgene_list) ){
     return(TRUE)
@@ -334,6 +404,10 @@ check_hkgene_list <- function(hkgene_list) {
   }
 }
 
+#'Check expression gene list
+#'
+#'@param exp_list Expression gene list
+#'@return true or false
 check_expression_list <- function(exp_list) {
   if( is.data.frame(exp_list) || is.list(exp_list) || is.vector(exp_list)){
     return(TRUE)
@@ -342,6 +416,10 @@ check_expression_list <- function(exp_list) {
   }
 }
 
+#'Check normalized expression gene list
+#'
+#'@param norm_list Normalized expression gene list
+#'@return true or false
 check_norm_list <- function(norm_list) {
   if( is.data.frame(norm_list) || is.list(norm_list) || is.vector(norm_list)){
     if(length(norm_list)!=0){
@@ -355,6 +433,10 @@ check_norm_list <- function(norm_list) {
   }
 }
 
+#'Check normalization method
+#'
+#'@param method Normalization method
+#'@return true or false
 check_method <- function(method) {
   if( method %in% method_v ){
     return(TRUE)
