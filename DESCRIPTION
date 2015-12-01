@@ -10,5 +10,6 @@ License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Depends: R (>= 3.1.0)
-Requires: limma, NOISeq, DESeq
+Imports: limma, NOISeq, DESeq
+Suggests: methods
 LazyData: true

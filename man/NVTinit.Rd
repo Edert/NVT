@@ -15,7 +15,7 @@ NVTinit(hkgene_list, exp_list1, exp_list2, nmethod, len)
 
 \item{nmethod}{The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G]}
 
-\item{length}{A data frame of length per gene}
+\item{len}{A data frame of length per gene}
 }
 \value{
 A NVTobject ready for normalization

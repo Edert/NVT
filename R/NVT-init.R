@@ -4,11 +4,12 @@ method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPM","DEQ","TPM","G")
 
 #'initialize and load input dato into NVTobject
 #'
+#'@export
 #'@param hkgene_list A list of housekeeping-genes
 #'@param exp_list1 The first data frame of expression values per gene
 #'@param exp_list2 Second data frame of expression values per gene
 #'@param nmethod The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G]
-#'@param length A data frame of length per gene
+#'@param len A data frame of length per gene
 #'@return A NVTobject ready for normalization
 #'@examples
 #'library("NVT")
@@ -50,6 +51,7 @@ NVTinit <- function(hkgene_list, exp_list1, exp_list2, nmethod, len){
 #'Normalize a NVTobject,
 #'the normalization method has been set already in the initialization step
 #'
+#'@export
 #'@param NVTdataobj A previously initialized NVTobject
 #'@return A normalized NVTobject
 #'@examples
@@ -303,6 +305,7 @@ NVTnormalize <- function(NVTdataobj) {
 
 #'Plot the MA-plot of a NVTobject
 #'
+#'@export
 #'@param NVTdataobj A previously initialized and normalized NVTobject
 #'@return Plots the MA-plot with the housekeeping genes indicated
 #'@examples
@@ -374,6 +377,7 @@ NVTplot <- function(NVTdataobj) {
 
 #'Calculate the pearson correclation of the housekeeping genes of an initialized and normalized NVTobject
 #'
+#'@export
 #'@param NVTdataobj A previously initialized and normalized NVTobject
 #'@return Pearson correlation of the normalized housekeeping genes between the samples
 #'@examples
@@ -407,6 +411,7 @@ NVTpearson <- function(NVTdataobj) {
 
 #'Calculate the pearson correclation of the housekeeping genes of an initialized NVTobject for all normalization methods
 #'
+#'@export
 #'@param NVTdataobj A previously initialzed and normalized NVTobject
 #'@return Sorted pearson correlations of the normalized housekeeping genes between the samples
 #'@examples
@@ -450,6 +455,7 @@ check_hkgene_list <- function(hkgene_list) {
 
 #'Check if housekeeping gene list is valid
 #'
+#'@param NVTobject A initialized NVTdata object
 #'@param hkgene_list Housekeeping gene list
 #'@return true or false
 exists_hkgene_list <- function(NVTobject,hkgene_list) {
@@ -503,3 +509,36 @@ check_method <- function(norm_method) {
     stop("Unknown method specified!")
   }
 }
+
+#' List of lenght of each gene
+#'
+#' A data set with each gene name and its length in nucleotides
+#'
+#' @format A data frame with 896 rows and 1 variable:
+#' \describe{
+#'   \item{length}{gene lenght in bp}
+#'   ...
+#' }
+"mylen"
+
+#' List of expression data of each gene
+#'
+#' A data set with each gene name and its expression in mapped reads, under hypoxic condictions
+#'
+#' @format A data frame with 896 rows and 1 variable:
+#' \describe{
+#'   \item{Mapped_reads_Hypoxy}{gene expression in mapped reads}
+#'   ...
+#' }
+"myexp1"
+
+#' List of expression data of each gene
+#'
+#' A data set with each gene name and its expression in mapped reads, under normoxic condictions
+#'
+#' @format A data frame with 896 rows and 1 variable:
+#' \describe{
+#'   \item{Mapped_reads_Normoxy}{gene expression in mapped reads}
+#'   ...
+#' }
+"myexp2"

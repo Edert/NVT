@@ -7,6 +7,8 @@
 exists_hkgene_list(NVTobject, hkgene_list)
 }
 \arguments{
+\item{NVTobject}{A initialized NVTdata object}
+
 \item{hkgene_list}{Housekeeping gene list}
 }
 \value{
