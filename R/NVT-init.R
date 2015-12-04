@@ -273,7 +273,7 @@ NVTnormalize <- function(NVTdataobj) {
              NVTdataobj@norm2 <- as.data.frame(RPK2/(sum(RPK2)/10^6))
            },
            G={
-             print ("Normalization be given gene-set!")
+             print ("Normalization by given gene-set!")
              print(NVTdataobj@hklist)
 
              gn1 <- mean(NVTdataobj@exp1[NVTdataobj@hklist,])
