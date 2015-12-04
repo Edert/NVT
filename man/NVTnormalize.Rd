@@ -2,8 +2,7 @@
 % Please edit documentation in R/NVT-init.R
 \name{NVTnormalize}
 \alias{NVTnormalize}
-\title{Normalize a NVTobject,
-the normalization method has been set already in the initialization step}
+\title{Normalize a NVTobject, the normalization method has been set already in the initialization step}
 \usage{
 NVTnormalize(NVTdataobj)
 }
@@ -14,8 +13,7 @@ NVTnormalize(NVTdataobj)
 A normalized NVTobject
 }
 \description{
-Normalize a NVTobject,
-the normalization method has been set already in the initialization step
+Normalize a NVTobject, the normalization method has been set already in the initialization step
 }
 \examples{
 library("NVT")

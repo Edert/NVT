@@ -2,7 +2,7 @@
 % Please edit documentation in R/NVT-init.R
 \name{NVTinit}
 \alias{NVTinit}
-\title{initialize and load input dato into NVTobject}
+\title{Initialize and load input data into a NVTobject}
 \usage{
 NVTinit(hkgene_list, exp_list1, exp_list2, nmethod, len)
 }
@@ -21,7 +21,7 @@ NVTinit(hkgene_list, exp_list1, exp_list2, nmethod, len)
 A NVTobject ready for normalization
 }
 \description{
-initialize and load input dato into NVTobject
+Initialize and load input data into a NVTobject
 }
 \examples{
 library("NVT")

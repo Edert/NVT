@@ -2,7 +2,7 @@
 method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPM","DEQ","TPM","G")
 #"RPKM2",
 
-#'initialize and load input dato into NVTobject
+#'Initialize and load input data into a NVTobject
 #'
 #'@export
 #'@param hkgene_list A list of housekeeping-genes
@@ -48,8 +48,7 @@ NVTinit <- function(hkgene_list, exp_list1, exp_list2, nmethod, len){
   }
 }
 
-#'Normalize a NVTobject,
-#'the normalization method has been set already in the initialization step
+#'Normalize a NVTobject, the normalization method has been set already in the initialization step
 #'
 #'@export
 #'@param NVTdataobj A previously initialized NVTobject
