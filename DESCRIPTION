@@ -10,7 +10,7 @@ License: GPL-3
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Depends: R (>= 3.1.0)
-Imports: limma, NOISeq, DESeq
-Suggests: methods
+Imports:
+Suggests: limma, NOISeq, DESeq, methods
 LazyData: true
 URL: https://github.com/NexusX/NVT
