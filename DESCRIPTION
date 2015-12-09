@@ -11,6 +11,6 @@ LazyData: TRUE
 RoxygenNote: 5.0.1
 Depends: R (>= 3.1.0)
 Imports:
-Suggests: limma, NOISeq, DESeq, methods
+Suggests: limma, NOISeq, DESeq, methods, edegR
 LazyData: true
 URL: https://github.com/NexusX/NVT

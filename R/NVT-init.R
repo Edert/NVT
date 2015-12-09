@@ -1,16 +1,15 @@
 #global methods availible
 method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPM","DEQ","TPM","G")
-#"RPKM2",
 
 #'Initialize and load input data into a NVTobject
 #'
 #'@export
-#'@param hkgene_list A list of housekeeping-genes
-#'@param exp_list1 The first data frame of expression values per gene
-#'@param exp_list2 Second data frame of expression values per gene
-#'@param nmethod The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G]
-#'@param len A data frame of length per gene
-#'@return A NVTobject ready for normalization
+#'@param housekeeping_gene_list A list of housekeeping-genes
+#'@param expression_list_1 The first data frame of expression values per gene
+#'@param expression_list_2 Second data frame of expression values per gene
+#'@param normalization_method The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G] N = No normalization, TC = Total count normalization, Med = Median normalization, TMM = Trimmed Mean of M-values normalization, UQ = Upper Quartile normalization , UQ2 = Upper Quartile normalization (from NOISeq), Q = Quantile normalization, RPKM = Reads Per Kilobase per Million mapped reads normalization, DEQ = normalization method included in the DESeq package, TPM = transcripts per million normalization, G = use the provided genes to normalize
+#'@param length A data frame of length per gene
+#'@return An NVTobject ready for normalization
 #'@examples
 #'library("NVT")
 #'data(myexp1)
@@ -20,31 +19,31 @@ method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPM","DEQ","TPM","G")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 #'mynvt2 <- NVTinit(mylist1,myexp1,myexp2,"RPKM",mylen)
-NVTinit <- function(hkgene_list, exp_list1, exp_list2, nmethod, len){
+NVTinit <- function(housekeeping_gene_list, expression_list_1, expression_list_2, normalization_method, length){
 
-  if (missing('hkgene_list')){
+  if (missing('housekeeping_gene_list')){
     stop("No housekeeping-gene list specified!")
   }
-  if (missing('exp_list1')){
+  if (missing('expression_list_1')){
     stop("No expression list specified!")
   }
-  if (missing('exp_list2')){
+  if (missing('expression_list_2')){
     stop("No second expression list specified!")
   }
-  if (missing('nmethod')){
+  if (missing('normalization_method')){
     stop("No method specified!")
   }
 
   #length missing
-  if (missing('len')){
-    if(check_expression_list(exp_list1) && check_expression_list(exp_list2) && check_hkgene_list(hkgene_list) && check_method(nmethod)) {
-      return(new("NVTdata",exp1=exp_list1,exp2=exp_list2,hklist=hkgene_list,norm_method=nmethod))
+  if (missing('length')){
+    if(check_expression_list(expression_list_1) && check_expression_list(expression_list_2) && check_hkgene_list(housekeeping_gene_list) && check_method(normalization_method)) {
+      return(new("NVTdata",exp1=expression_list_1,exp2=expression_list_2,hklist=housekeeping_gene_list,norm_method=normalization_method))
     }
   }
 
   #all here add length
-  if(check_expression_list(exp_list1) && check_expression_list(exp_list2) && check_hkgene_list(hkgene_list) && check_method(nmethod)) {
-    return(new("NVTdata",exp1=exp_list1,exp2=exp_list2,hklist=hkgene_list,norm_method=nmethod,length=len))
+  if(check_expression_list(expression_list_1) && check_expression_list(expression_list_2) && check_hkgene_list(housekeeping_gene_list) && check_method(normalization_method)) {
+    return(new("NVTdata",exp1=expression_list_1,exp2=expression_list_2,hklist=housekeeping_gene_list,norm_method=normalization_method,length=length))
   }
 }
 
@@ -360,8 +359,10 @@ NVTplot <- function(NVTdataobj) {
          ,pch=20,col=rgb(193,205,205,90,maxColorValue=255),xlim=c(min, max),ylim=c(min, max))
     mtext(paste(NVTdataobj@norm_method,"normalized"))
 
+    #add hk genes
     points(m1,m2,col="blue",pch=19)
-
+    #hk gene names
+    text(m1,m2,NVTdataobj@hklist,cex=0.6, pos=4, col = "blue")
 
     fm <- lm(m[,2] ~ m[,1])
 
@@ -371,6 +372,83 @@ NVTplot <- function(NVTdataobj) {
 
   }else{
     stop("Not a valid NVTdata object with normalized values!")
+  }
+}
+
+#'Plot the MA-plot of a NVTobject with ggplot2
+#'
+#'@export
+#'@param NVTdataobj A previously initialized and normalized NVTobject
+#'@return Plots the MA-plot with the housekeeping genes indicated
+#'@examples
+#'library("NVT")
+#'data(myexp1)
+#'data(myexp2)
+#'data(mylen)
+#'mylist1=c("CT462","CT115","CT045","CT678")
+#'
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
+#'mynorm <- NVTnormalize(mynvt)
+#'
+#'NVTadvancedplot(mynorm)
+NVTadvancedplot <- function(NVTdataobj) {
+
+  if (requireNamespace("ggplot2", quietly = TRUE)) {
+
+    if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
+     && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
+     && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)
+     && exists_hkgene_list(NVTdataobj,NVTdataobj@hklist)){
+
+      l1 <- log(NVTdataobj@norm1[[1]])
+      l2 <- log(NVTdataobj@norm2[[1]])
+      names(l1) <- rownames(NVTdataobj@norm1)
+      names(l2) <- rownames(NVTdataobj@norm2)
+
+      #clean up
+     l <- cbind(l1,l2)
+     idx <- apply(l, 1, function(x) all(!is.infinite(x)))
+     l <- l[idx,]
+     idx <- apply(l, 1, function(x) all(!is.na(x)))
+     l <- l[idx,]
+     idx <- apply(l, 1, function(x) all(!is.nan(x)))
+     l <- l[idx,]
+
+     min <- min(l)
+     max <- max(l)
+
+     #only houskeeping genes
+     m1 <- l1[NVTdataobj@hklist]
+     m2 <- l2[NVTdataobj@hklist]
+
+     #clean up for lm
+     m <- cbind(m1,m2)
+     idx <- apply(m, 1, function(x) all(!is.infinite(x)))
+     m <- m[idx,]
+     idx <- apply(m, 1, function(x) all(!is.na(x)))
+     m <- m[idx,]
+     idx <- apply(m, 1, function(x) all(!is.nan(x)))
+     m <- m[idx,]
+
+     myl <- as.data.frame(l)
+
+     mysubl <-  myl[NVTdataobj@hklist,]
+     names(mysubl) <- c(names(NVTdataobj@norm1),names(NVTdataobj@norm2))
+
+     d <- ggplot(data = myl, aes(x = l1, y = l2, label = rownames(myl))) + geom_point(shape=16, alpha = 0.2 ) + geom_smooth(method=lm)
+     #d + geom_point(data=mysubl, colour="blue") + geom_text(data=mysubl, label=rownames(mysubl))
+     d + ggtitle(bquote(atop(.(paste("Normalized data of:", names(NVTdataobj@norm1),"vs",names(NVTdataobj@norm2)) ), atop(italic(.(paste(NVTdataobj@norm_method,"normalized"))), "")))) + xlab(paste("log( normalized names",names(NVTdataobj@norm1),")"))+ ylab(paste("log( normalized names",names(NVTdataobj@norm2),")"))
+
+     #add hk genes
+     #points(m1,m2,col="blue",pch=19)
+     #hk gene names
+     #text(m1,m2,NVTdataobj@hklist,cex=0.6, pos=4, col = "blue")
+
+   }else{
+     stop("Not a valid NVTdata object with normalized values!")
+   }
+  }else{
+    print("ggplot2 not found, please use the NVTplot function!")
   }
 }
 
@@ -435,8 +513,9 @@ NVTtestall <- function(NVTdataobj) {
     pv <-append(pv,p)
   }
   pearson <- as.data.frame(cbind(method_v,pv))
-
-  return(pearson[order(pearson$pv,decreasing = T),])
+  spearson <- pearson[order(pearson$pv,decreasing = T),]
+  names(spearson) <- c("Normalization_method","Pearson_value")
+  return(spearson)
 }
 
 

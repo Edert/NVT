@@ -4,21 +4,22 @@
 \alias{NVTinit}
 \title{Initialize and load input data into a NVTobject}
 \usage{
-NVTinit(hkgene_list, exp_list1, exp_list2, nmethod, len)
+NVTinit(housekeeping_gene_list, expression_list_1, expression_list_2,
+  normalization_method, length)
 }
 \arguments{
-\item{hkgene_list}{A list of housekeeping-genes}
+\item{housekeeping_gene_list}{A list of housekeeping-genes}
 
-\item{exp_list1}{The first data frame of expression values per gene}
+\item{expression_list_1}{The first data frame of expression values per gene}
 
-\item{exp_list2}{Second data frame of expression values per gene}
+\item{expression_list_2}{Second data frame of expression values per gene}
 
-\item{nmethod}{The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G]}
+\item{normalization_method}{The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G] N = No normalization, TC = Total count normalization, Med = Median normalization, TMM = Trimmed Mean of M-values normalization, UQ = Upper Quartile normalization , UQ2 = Upper Quartile normalization (from NOISeq), Q = Quantile normalization, RPKM = Reads Per Kilobase per Million mapped reads normalization, DEQ = normalization method included in the DESeq package, TPM = transcripts per million normalization, G = use the provided genes to normalize}
 
-\item{len}{A data frame of length per gene}
+\item{length}{A data frame of length per gene}
 }
 \value{
-A NVTobject ready for normalization
+An NVTobject ready for normalization
 }
 \description{
 Initialize and load input data into a NVTobject
