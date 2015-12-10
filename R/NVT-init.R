@@ -7,7 +7,7 @@ method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPM","DEQ","TPM","G")
 #'@param housekeeping_gene_list A list of housekeeping-genes
 #'@param expression_list_1 The first data frame of expression values per gene
 #'@param expression_list_2 Second data frame of expression values per gene
-#'@param normalization_method The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G] N = No normalization, TC = Total count normalization, Med = Median normalization, TMM = Trimmed Mean of M-values normalization, UQ = Upper Quartile normalization , UQ2 = Upper Quartile normalization (from NOISeq), Q = Quantile normalization, RPKM = Reads Per Kilobase per Million mapped reads normalization, DEQ = normalization method included in the DESeq package, TPM = transcripts per million normalization, G = use the provided genes to normalize
+#'@param normalization_method The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G] N = No normalization, TC = Total count normalization, Med = Median normalization, TMM = Trimmed Mean of M-values normalization, UQ = Upper Quartile normalization , UQ2 = Upper Quartile normalization (from NOISeq), Q = Quantile normalization, RPKM = Reads Per Kilobase per Million mapped reads normalization, RPM = Reads per Million mapped reads normalization, DEQ = normalization method included in the DESeq package, TPM = transcripts per million normalization, G = use the provided genes to normalize
 #'@param length A data frame of length per gene
 #'@return An NVTobject ready for normalization
 #'@examples
@@ -357,7 +357,7 @@ NVTplot <- function(NVTdataobj) {
          xlab=paste("log( normalized expression",names(NVTdataobj@norm1),")"),
          ylab=paste("log( normalized expression",names(NVTdataobj@norm2),")")
          ,pch=20,col=rgb(193,205,205,90,maxColorValue=255),xlim=c(min, max),ylim=c(min, max))
-    mtext(paste(NVTdataobj@norm_method,"normalized"))
+    mtext(paste(NVTdataobj@norm_method,"normalized"),font=3)
 
     #add hk genes
     points(m1,m2,col="blue",pch=19)
@@ -367,7 +367,7 @@ NVTplot <- function(NVTdataobj) {
     fm <- lm(m[,2] ~ m[,1])
 
     #print lines
-    abline(0, 1, col = "black", lwd = 1, lty = 2)
+    abline(0, 1, lwd = 1, lty = 2, col=rgb(193,205,205,255,maxColorValue=255))
     abline(fm, col = "red")
 
   }else{
@@ -393,7 +393,9 @@ NVTplot <- function(NVTdataobj) {
 #'NVTadvancedplot(mynorm)
 NVTadvancedplot <- function(NVTdataobj) {
 
-  if (requireNamespace("ggplot2", quietly = TRUE)) {
+  if (requireNamespace("ggplot2", quietly = TRUE)  ) {
+  #only needed for dsensity plots
+  #&& requireNamespace("gridExtra", quietly = TRUE)
 
     if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
      && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
@@ -433,16 +435,31 @@ NVTadvancedplot <- function(NVTdataobj) {
      myl <- as.data.frame(l)
 
      mysubl <-  myl[NVTdataobj@hklist,]
-     names(mysubl) <- c(names(NVTdataobj@norm1),names(NVTdataobj@norm2))
+     myl[,3] <- rownames(myl)
 
-     d <- ggplot(data = myl, aes(x = l1, y = l2, label = rownames(myl))) + geom_point(shape=16, alpha = 0.2 ) + geom_smooth(method=lm)
-     #d + geom_point(data=mysubl, colour="blue") + geom_text(data=mysubl, label=rownames(mysubl))
-     d + ggtitle(bquote(atop(.(paste("Normalized data of:", names(NVTdataobj@norm1),"vs",names(NVTdataobj@norm2)) ), atop(italic(.(paste(NVTdataobj@norm_method,"normalized"))), "")))) + xlab(paste("log( normalized names",names(NVTdataobj@norm1),")"))+ ylab(paste("log( normalized names",names(NVTdataobj@norm2),")"))
+     #empty plot as spacing of the density plots
+     #empty <- ggplot()+geom_point(aes(1,1), colour="white") +  theme(plot.background = element_blank(), panel.grid.major = element_blank(),  panel.grid.minor = element_blank(), panel.border = element_blank(),  panel.background = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_blank(), axis.text.y = element_blank(), axis.ticks = element_blank())
 
-     #add hk genes
-     #points(m1,m2,col="blue",pch=19)
-     #hk gene names
-     #text(m1,m2,NVTdataobj@hklist,cex=0.6, pos=4, col = "blue")
+     d <-  ggplot2::ggplot(data=myl, ggplot2::aes(x = l1, y = l2)) + ggplot2::geom_point(shape=16, alpha = 0.3,  color="gray")
+     d <- d + ggplot2::geom_point(data=subset(myl,V3 %in% NVTdataobj@hklist), ggplot2::aes(x = l1, y = l2), alpha = 1,  color="blue")
+     d <- d + ggplot2::geom_text(data=subset(myl,V3 %in% NVTdataobj@hklist), ggplot2::aes(label=V3),hjust=-0.2, vjust=0.5,  color="blue", size=3)
+     d <- d + ggplot2::geom_smooth(data=subset(myl,V3 %in% NVTdataobj@hklist), method=lm,fullrange=TRUE, se=FALSE, color="red")
+     d <- d + ggplot2::ggtitle(bquote(atop(.(paste("Normalized data of:", names(NVTdataobj@norm1),"vs",names(NVTdataobj@norm2))), atop(italic(.(paste(NVTdataobj@norm_method,"normalized"))), "")))) + ggplot2::xlab(paste("log( normalized names",names(NVTdataobj@norm1),")"))+ ggplot2::ylab(paste("log( normalized names",names(NVTdataobj@norm2),")"))
+     d <- d + ggplot2::geom_abline(intercept = 0, slope = 1, alpha = 0.9, linetype=2, color="gray")
+     d <- d + ggplot2::geom_rug(col="darkred",alpha=.1,position='jitter')
+     d
+
+     #desnity plots
+     #plot_top <- ggplot(data=myl, aes(l1)) +
+     # geom_density(alpha=.5) +
+     # scale_fill_manual(values = c("orange", "purple")) +
+     # theme(legend.position = "none")
+     #plot_right <- ggplot(data=myl, aes(l2)) +
+     #  geom_density(alpha=.5) +
+     #  coord_flip() +
+     # scale_fill_manual(values = c("orange", "purple")) +
+     #  theme(legend.position = "none")
+     #grid.arrange(plot_top, empty, d, plot_right, ncol=2, nrow=2, widths=c(4, 1), heights=c(1, 4))
 
    }else{
      stop("Not a valid NVTdata object with normalized values!")
