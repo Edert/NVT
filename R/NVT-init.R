@@ -8,7 +8,7 @@ method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPM","DEQ","TPM","G")
 #'@param expression_list_1 The first data frame of expression values per gene
 #'@param expression_list_2 Second data frame of expression values per gene
 #'@param normalization_method The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G] N = No normalization, TC = Total count normalization, Med = Median normalization, TMM = Trimmed Mean of M-values normalization, UQ = Upper Quartile normalization , UQ2 = Upper Quartile normalization (from NOISeq), Q = Quantile normalization, RPKM = Reads Per Kilobase per Million mapped reads normalization, RPM = Reads per Million mapped reads normalization, DEQ = normalization method included in the DESeq package, TPM = transcripts per million normalization, G = use the provided genes to normalize
-#'@param length A data frame of length per gene
+#'@param feat_length A data frame of length per gene/exon
 #'@return An NVTobject ready for normalization
 #'@examples
 #'library("NVT")
@@ -19,7 +19,7 @@ method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPM","DEQ","TPM","G")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 #'mynvt2 <- NVTinit(mylist1,myexp1,myexp2,"RPKM",mylen)
-NVTinit <- function(housekeeping_gene_list, expression_list_1, expression_list_2, normalization_method, length){
+NVTinit <- function(housekeeping_gene_list, expression_list_1, expression_list_2, normalization_method, feat_length){
 
   if (missing('housekeeping_gene_list')){
     stop("No housekeeping-gene list specified!")
@@ -34,16 +34,41 @@ NVTinit <- function(housekeeping_gene_list, expression_list_1, expression_list_2
     stop("No method specified!")
   }
 
-  #length missing
-  if (missing('length')){
-    if(check_expression_list(expression_list_1) && check_expression_list(expression_list_2) && check_hkgene_list(housekeeping_gene_list) && check_method(normalization_method)) {
-      return(new("NVTdata",exp1=expression_list_1,exp2=expression_list_2,hklist=housekeeping_gene_list,norm_method=normalization_method))
-    }
-  }
 
-  #all here add length
-  if(check_expression_list(expression_list_1) && check_expression_list(expression_list_2) && check_hkgene_list(housekeeping_gene_list) && check_method(normalization_method)) {
-    return(new("NVTdata",exp1=expression_list_1,exp2=expression_list_2,hklist=housekeeping_gene_list,norm_method=normalization_method,length=length))
+  if( all(rownames(expression_list_1) %in% rownames(expression_list_2)) && all(rownames(expression_list_2) %in% rownames(expression_list_1))  ){
+
+   #length missing
+   if (missing('feat_length')){
+
+      if(check_expression_list(expression_list_1) && check_expression_list(expression_list_2) && check_hkgene_list(housekeeping_gene_list) && check_method(normalization_method)) {
+
+       #sort expression data via rownames
+       expression_list_1 <- expression_list_1[order(rownames(expression_list_1)), , drop = FALSE]
+       expression_list_2 <- expression_list_2[order(rownames(expression_list_2)), , drop = FALSE]
+
+       return(new("NVTdata",exp1=expression_list_1,exp2=expression_list_2,hklist=housekeeping_gene_list,norm_method=normalization_method))
+     }
+   }
+
+   #all here add length
+   if(check_expression_list(expression_list_1) && check_expression_list(expression_list_2) && check_hkgene_list(housekeeping_gene_list) && check_method(normalization_method) ) {
+
+     #check length data
+     if( all(rownames(expression_list_1) %in% rownames(feat_length)) && all(rownames(expression_list_2) %in% rownames(feat_length)) ){
+
+        #make sure its correctly sorted
+        feat_length <- subset(feat_length, rownames(feat_length) %in% rownames(expression_list_1))
+        feat_length <- feat_length[order(rownames(feat_length)), , drop = FALSE]
+        expression_list_1 <- expression_list_1[order(rownames(expression_list_1)), , drop = FALSE]
+        expression_list_2 <- expression_list_2[order(rownames(expression_list_2)), , drop = FALSE]
+
+        return(new("NVTdata",exp1=expression_list_1,exp2=expression_list_2,hklist=housekeeping_gene_list,norm_method=normalization_method,length=feat_length))
+     }else{
+       stop("Not all expressed genes have a length in the provided data-set!")
+     }
+   }
+  }else{
+    stop("The gene/exon names in the expression data sets are unequal/different!")
   }
 }
 
@@ -89,9 +114,9 @@ NVTnormalize <- function(NVTdataobj) {
              print ("Median normalization!")
 
              ci1 <- NVTdataobj@exp1[,1]
-             N1 <- median(ci1)
+             N1 <- median(ci1[ci1>0])#non 0 values
              ci2 <- NVTdataobj@exp2[,1]
-             N2 <- median(ci2)
+             N2 <- median(ci2[ci2>0])#non 0 values
              m=mean(c(N1,N2))
              NVTdataobj@norm1 <-  as.data.frame(ci1/N1*m)
              NVTdataobj@norm2 <-  as.data.frame(ci2/N2*m)
@@ -127,8 +152,8 @@ NVTnormalize <- function(NVTdataobj) {
 
              #N1 <- quantile(res[,1], 0.75)
              #N2 <- quantile(res[,2], 0.75)
-             N1 <- quantile(ci1, 0.75)
-             N2 <- quantile(ci2, 0.75)
+             N1 <- quantile(ci1[ci1>0], 0.75) #non 0 values
+             N2 <- quantile(ci2[ci2>0], 0.75) #non 0 values
              m=mean(N1,N2)
 
              NVTdataobj@norm1 <- as.data.frame( ci1/N1*m )
@@ -273,7 +298,7 @@ NVTnormalize <- function(NVTdataobj) {
            },
            G={
              print ("Normalization by given gene-set!")
-             print(NVTdataobj@hklist)
+             print (NVTdataobj@hklist)
 
              gn1 <- mean(NVTdataobj@exp1[NVTdataobj@hklist,])
              gn2 <- mean(NVTdataobj@exp2[NVTdataobj@hklist,])
@@ -537,7 +562,7 @@ NVTtestall <- function(NVTdataobj) {
 }
 
 
-#'Load gff2 (gtf) or gff3 file
+#'Load a gff2 (gtf) or gff3 file, this may take a while depending on the file-size / number of features
 #'
 #'@export
 #'@param gff_file The annotation in gff format

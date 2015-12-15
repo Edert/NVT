@@ -2,7 +2,7 @@
 % Please edit documentation in R/NVT-init.R
 \name{NVTloadgff}
 \alias{NVTloadgff}
-\title{Load gff2 (gtf) or gff3 file}
+\title{Load a gff2 (gtf) or gff3 file, this may take a while depending on the file-size / number of features}
 \usage{
 NVTloadgff(gff_file, gff_version, gff_feature, gff_name)
 }
@@ -19,7 +19,7 @@ NVTloadgff(gff_file, gff_version, gff_feature, gff_name)
 List of gene/exon names and their length
 }
 \description{
-Load gff2 (gtf) or gff3 file
+Load a gff2 (gtf) or gff3 file, this may take a while depending on the file-size / number of features
 }
 \examples{
 library("NVT")

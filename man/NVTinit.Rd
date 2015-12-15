@@ -5,7 +5,7 @@
 \title{Initialize and load input data into a NVTobject}
 \usage{
 NVTinit(housekeeping_gene_list, expression_list_1, expression_list_2,
-  normalization_method, length)
+  normalization_method, feat_length)
 }
 \arguments{
 \item{housekeeping_gene_list}{A list of housekeeping-genes}
@@ -16,7 +16,7 @@ NVTinit(housekeeping_gene_list, expression_list_1, expression_list_2,
 
 \item{normalization_method}{The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G] N = No normalization, TC = Total count normalization, Med = Median normalization, TMM = Trimmed Mean of M-values normalization, UQ = Upper Quartile normalization , UQ2 = Upper Quartile normalization (from NOISeq), Q = Quantile normalization, RPKM = Reads Per Kilobase per Million mapped reads normalization, RPM = Reads per Million mapped reads normalization, DEQ = normalization method included in the DESeq package, TPM = transcripts per million normalization, G = use the provided genes to normalize}
 
-\item{length}{A data frame of length per gene}
+\item{feat_length}{A data frame of length per gene/exon}
 }
 \value{
 An NVTobject ready for normalization
