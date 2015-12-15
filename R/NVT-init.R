@@ -536,6 +536,57 @@ NVTtestall <- function(NVTdataobj) {
 }
 
 
+#'Load gff2 (gtf) or gff3 file
+#'
+#'@export
+#'@param gff_file The annotation in gff format
+#'@param gff_version The version of the provided gff file [gff1,gff2,gff3,gtf]
+#'@param gff_feature The feature to use [default: exon]
+#'@param gff_name The name to use [default: gene_id]
+#'@return List of gene/exon names and their length
+#'@examples
+#'library("NVT")
+#'data(myexp1)
+#'data(myexp2)
+#'#get test GFF-file provided by this library
+#'mygffpath<-system.file("extdata", "Ctr-D-UW3CX.gff", package = "NVT")
+#'
+#'mylen <- NVTloadgff(mygffpath,"gff3","gene","locus_tag")
+#'mylist1 <- c("CT462","CT115","CT045","CT678")
+#'
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N",mylen)
+NVTloadgff <- function(gff_file, gff_version, gff_feature, gff_name) {
+
+  if (requireNamespace("GenomicRanges", quietly = TRUE) && requireNamespace("rtracklayer", quietly = TRUE)) {
+
+    if(is.null(gff_feature)) gff_feature <- "exon"
+    if(is.null(gff_name)) gff_name <- "gene_id"
+
+    mygff <- rtracklayer::import(gff_file, format=gff_version, feature.type=gff_feature )
+    #mygff <- rtracklayer::import.gff(gff_file, format=gff_version, feature.type=gff_feature )
+
+    mygred <- GenomicRanges::reduce(S4Vectors::split(mygff, GenomicRanges::elementMetadata(mygff)[[gff_name]]))
+
+    mygffred <- GenomicRanges::unlist(mygred, use.names=T)
+    GenomicRanges::elementMetadata(mygffred)$gene_id <- rep(names(mygred), S4Vectors::elementLengths(mygred))
+    GenomicRanges::elementMetadata(mygffred)$widths <- GenomicRanges::width(mygffred)
+
+    get_length <- function(x) {
+      sum(GenomicRanges::elementMetadata(x)$widths)
+    }
+    mylen <- t(sapply(S4Vectors::split(mygffred, GenomicRanges::elementMetadata(mygffred)$gene_id), get_length))
+    mylen <- t(mylen)
+    colnames(mylen) <- c("Length")
+
+   return(as.data.frame(mylen))
+
+  }else{
+    print("GenomicRanges and/or rtracklayer not found, please install these packages or extract gene length manually!")
+  }
+
+}
+
+
 #'Check housekeeping gene list
 #'
 #'@param hkgene_list Housekeeping gene list
@@ -637,3 +688,4 @@ check_method <- function(norm_method) {
 #'   ...
 #' }
 "myexp2"
+

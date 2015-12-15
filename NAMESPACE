@@ -2,6 +2,7 @@
 
 export(NVTadvancedplot)
 export(NVTinit)
+export(NVTloadgff)
 export(NVTnormalize)
 export(NVTpearson)
 export(NVTplot)
