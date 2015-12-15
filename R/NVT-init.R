@@ -436,14 +436,15 @@ NVTadvancedplot <- function(NVTdataobj) {
 
      mysubl <-  myl[NVTdataobj@hklist,]
      myl[,3] <- rownames(myl)
+     colnames(myl)[3] <- "names"
 
      #empty plot as spacing of the density plots
      #empty <- ggplot()+geom_point(aes(1,1), colour="white") +  theme(plot.background = element_blank(), panel.grid.major = element_blank(),  panel.grid.minor = element_blank(), panel.border = element_blank(),  panel.background = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_blank(), axis.text.y = element_blank(), axis.ticks = element_blank())
 
      d <-  ggplot2::ggplot(data=myl, ggplot2::aes(x = l1, y = l2)) + ggplot2::geom_point(shape=16, alpha = 0.3,  color="gray")
-     d <- d + ggplot2::geom_point(data=subset(myl,V3 %in% NVTdataobj@hklist), ggplot2::aes(x = l1, y = l2), alpha = 1,  color="blue")
-     d <- d + ggplot2::geom_text(data=subset(myl,V3 %in% NVTdataobj@hklist), ggplot2::aes(label=V3),hjust=-0.2, vjust=0.5,  color="blue", size=3)
-     d <- d + ggplot2::geom_smooth(data=subset(myl,V3 %in% NVTdataobj@hklist), method=lm,fullrange=TRUE, se=FALSE, color="red")
+     d <- d + ggplot2::geom_point(data=subset(myl,names %in% NVTdataobj@hklist), ggplot2::aes(x = l1, y = l2), alpha = 1,  color="blue")
+     d <- d + ggplot2::geom_text(data=subset(myl,names %in% NVTdataobj@hklist), ggplot2::aes(label=names),hjust=-0.2, vjust=0.5,  color="blue", size=3)
+     d <- d + ggplot2::geom_smooth(data=subset(myl,names %in% NVTdataobj@hklist), method=lm,fullrange=TRUE, se=FALSE, color="red")
      d <- d + ggplot2::ggtitle(bquote(atop(.(paste("Normalized data of:", names(NVTdataobj@norm1),"vs",names(NVTdataobj@norm2))), atop(italic(.(paste(NVTdataobj@norm_method,"normalized"))), "")))) + ggplot2::xlab(paste("log( normalized names",names(NVTdataobj@norm1),")"))+ ggplot2::ylab(paste("log( normalized names",names(NVTdataobj@norm2),")"))
      d <- d + ggplot2::geom_abline(intercept = 0, slope = 1, alpha = 0.9, linetype=2, color="gray")
      d <- d + ggplot2::geom_rug(col="darkred",alpha=.1,position='jitter')
@@ -557,7 +558,7 @@ NVTtestall <- function(NVTdataobj) {
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N",mylen)
 NVTloadgff <- function(gff_file, gff_version, gff_feature, gff_name) {
 
-  if (requireNamespace("GenomicRanges", quietly = TRUE) && requireNamespace("rtracklayer", quietly = TRUE)) {
+  if (requireNamespace("GenomicRanges", quietly = TRUE) && requireNamespace("rtracklayer", quietly = TRUE) && requireNamespace("S4Vectors", quietly = TRUE)) {
 
     if(is.null(gff_feature)) gff_feature <- "exon"
     if(is.null(gff_name)) gff_name <- "gene_id"
