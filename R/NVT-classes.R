@@ -24,6 +24,7 @@ setClass(
   Class="NVTdata",
   representation=representation(
     norm_method="character",
+    norm_method_name="character",
     exp1="data.frame",
     exp2="data.frame",
     hklist="character",
@@ -33,6 +34,7 @@ setClass(
     ),
   prototype=prototype(
     norm_method="N",
+    norm_method_name="Not",
     exp1=data.frame(),
     exp2=data.frame(),
     hklist=character(),
