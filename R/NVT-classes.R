@@ -25,6 +25,7 @@ setClass(
   representation=representation(
     norm_method="character",
     norm_method_name="character",
+    is_norm="logical",
     exp1="data.frame",
     exp2="data.frame",
     hklist="character",
@@ -35,6 +36,7 @@ setClass(
   prototype=prototype(
     norm_method="N",
     norm_method_name="Not",
+    is_norm=FALSE,
     exp1=data.frame(),
     exp2=data.frame(),
     hklist=character(),

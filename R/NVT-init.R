@@ -99,6 +99,7 @@ NVTnormalize <- function(NVTdataobj) {
 
              NVTdataobj@norm1 <- NVTdataobj@exp1
              NVTdataobj@norm2 <- NVTdataobj@exp2
+             NVTdataobj@is_norm = TRUE
            },
            TC={
              print ("Total count normalization!")
@@ -111,6 +112,7 @@ NVTnormalize <- function(NVTdataobj) {
              m=mean(c(N1,N2))
              NVTdataobj@norm1 <-  as.data.frame(ci1/N1*m)
              NVTdataobj@norm2 <-  as.data.frame(ci2/N2*m)
+             NVTdataobj@is_norm = TRUE
            },
            Med={
              print ("Median normalization!")
@@ -123,7 +125,7 @@ NVTnormalize <- function(NVTdataobj) {
              m=mean(c(N1,N2))
              NVTdataobj@norm1 <-  as.data.frame(ci1/N1*m)
              NVTdataobj@norm2 <-  as.data.frame(ci2/N2*m)
-
+             NVTdataobj@is_norm = TRUE
            },
            TMM={
              print ("Trimmed Mean of M-values normalization!")
@@ -136,11 +138,13 @@ NVTnormalize <- function(NVTdataobj) {
                mynormmatrix <- NOISeq::tmm(mymatrix)
                NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
                NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+               NVTdataobj@is_norm = TRUE
              } else {
 
                print ("NOISeq package not available, data not normalized!")
                NVTdataobj@norm1 <- NVTdataobj@exp1
                NVTdataobj@norm2 <- NVTdataobj@exp2
+               NVTdataobj@is_norm = FALSE
              }
 
            },
@@ -163,6 +167,7 @@ NVTnormalize <- function(NVTdataobj) {
 
              NVTdataobj@norm1 <- as.data.frame( ci1/N1*m )
              NVTdataobj@norm2 <- as.data.frame( ci2/N2*m )
+             NVTdataobj@is_norm = TRUE
            },
            UQ2={
              print ("Upper Quartile normalization (from NOISeq)!")
@@ -175,11 +180,13 @@ NVTnormalize <- function(NVTdataobj) {
                mynormmatrix <- NOISeq::uqua(mymatrix, long = 1000, lc = 0, k = 0)
                NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
                NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+               NVTdataobj@is_norm = TRUE
              } else {
 
                print ("NOISeq package not available, data not normalized!")
                NVTdataobj@norm1 <- NVTdataobj@exp1
                NVTdataobj@norm2 <- NVTdataobj@exp2
+               NVTdataobj@is_norm = FALSE
              }
 
            },
@@ -194,22 +201,27 @@ NVTnormalize <- function(NVTdataobj) {
                mynormmatrix <- limma::normalizeBetweenArrays(mymatrix,"quantile")
                NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
                NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+               NVTdataobj@is_norm = TRUE
 
              } else {
                print ("limma package not available, data not normalized!")
                NVTdataobj@norm1 <- NVTdataobj@exp1
                NVTdataobj@norm2 <- NVTdataobj@exp2
+               NVTdataobj@is_norm = FALSE
              }
 
            },
            RPKM={
              print ("RPKM normalization!")
-             NVTdataobj@norm_method_name="Reads Per Kilobase per Million mapped reads (RPKM)"
 
              if(nrow(NVTdataobj@length)==0){
-               stop("No RPKM normalization possible without gene length")
-             }
+               print ("No RPKM normalization possible without gene length, data not normalized!")
+               NVTdataobj@norm1 <- NVTdataobj@exp1
+               NVTdataobj@norm2 <- NVTdataobj@exp2
+               NVTdataobj@is_norm = FALSE
+             }else{
 
+             NVTdataobj@norm_method_name="Reads Per Kilobase per Million mapped reads (RPKM)"
              li <- NVTdataobj@length
 
              ci1 <- NVTdataobj@exp1[,1]
@@ -221,15 +233,20 @@ NVTnormalize <- function(NVTdataobj) {
              N2 <- sum(ci2)
              NVTdataobj@norm2 <- as.data.frame(ci2/(N1/10^9)/(li))
              #NVTdataobj@norm2 <- 10^9*ci2/li*N2
+             NVTdataobj@is_norm = TRUE
+            }
            },
            RPM={
              print ("RPM normalization!")
-             NVTdataobj@norm_method_name="Reads Per Million mapped reads (RPM)"
 
              if(nrow(NVTdataobj@length)==0){
-               stop("No RPKM normalization possible without gene length")
-             }
+               print ("No RPM normalization possible without gene length, data not normalized!")
+               NVTdataobj@norm1 <- NVTdataobj@exp1
+               NVTdataobj@norm2 <- NVTdataobj@exp2
+               NVTdataobj@is_norm = FALSE
+             }else{
 
+             NVTdataobj@norm_method_name="Reads Per Million mapped reads (RPM)"
              li <- NVTdataobj@length
 
              ci1 <- NVTdataobj@exp1[,1]
@@ -239,6 +256,8 @@ NVTnormalize <- function(NVTdataobj) {
              ci2 <- NVTdataobj@exp2[,1]
              N2 <- sum(ci2)
              NVTdataobj@norm2 <- as.data.frame(ci2/(N1/10^9))
+             NVTdataobj@is_norm = TRUE
+            }
            },
            #RPKM2={
            #  print ("RPKM normalization!")
@@ -253,12 +272,13 @@ NVTnormalize <- function(NVTdataobj) {
            #  mynormmatrix <- rpkm(mymatrix,long=NVTdataobj@length[,1])
            #  NVTdataobj@norm1 <- as.data.frame(mynormmatrix[,1])
            #  NVTdataobj@norm2 <- as.data.frame(mynormmatrix[,2])
+           #  NVTdataobj@is_norm = TRUE
            #},
            DEQ={
              print ("DESeq normalization!")
-             NVTdataobj@norm_method_name="Negative binomial distribution (DESeq method)"
 
              if (requireNamespace("DESeq", quietly = TRUE)) {
+               NVTdataobj@norm_method_name="Negative binomial distribution (DESeq method)"
                print ("Using DESeq")
                condition = factor( c( "untreated", "treated"))
 
@@ -273,8 +293,10 @@ NVTnormalize <- function(NVTdataobj) {
                cds <- DESeq::estimateSizeFactors( cds )
                NVTdataobj@norm1 <- as.data.frame(DESeq::counts( cds, normalized=TRUE )[,1])
                NVTdataobj@norm2 <- as.data.frame(DESeq::counts( cds, normalized=TRUE )[,2])
+               NVTdataobj@is_norm = TRUE
 
              } else if(requireNamespace("DESeq2", quietly = TRUE)){
+                NVTdataobj@norm_method_name="Negative binomial distribution (DESeq method)"
                 print ("Using DESeq2")
                 condition = factor( c( "untreated", "treated"))
 
@@ -285,27 +307,32 @@ NVTnormalize <- function(NVTdataobj) {
                    mymatrix <- as.matrix(cbind(as.integer(NVTdataobj@exp1[,1]),as.integer(NVTdataobj@exp2[,1])))
                 }
 
-                dds <- DESeq2::DESeqDataSetFromMatrix( countData = mymatrix, colData = DataFrame(condition),design = ~ condition)
+                dds <- DESeq2::DESeqDataSetFromMatrix( countData = mymatrix, colData = S4Vectors::DataFrame(condition),design = ~ condition)
                 dds <- DESeq2::estimateSizeFactors(dds)
 
                 NVTdataobj@norm1 <- as.data.frame(DESeq2::counts( dds, normalized=TRUE )[,1])
                 NVTdataobj@norm2 <- as.data.frame(DESeq2::counts( dds, normalized=TRUE )[,2])
+                NVTdataobj@is_norm = TRUE
 
              } else{
                print ("DESeq and DESeq2 packages not available, data not normalized!")
                NVTdataobj@norm1 <- NVTdataobj@exp1
                NVTdataobj@norm2 <- NVTdataobj@exp2
+               NVTdataobj@is_norm = FALSE
              }
 
            },
            TPM={
              print ("TPM normalization!")
-             NVTdataobj@norm_method_name="Transcripts Per Million mapped reads (TPM)"
 
              if(nrow(NVTdataobj@length)==0){
-               stop("No TPM normalization possible without gene length")
-             }
+               print ("No TPM normalization possible without gene length, data not normalized!")
+               NVTdataobj@norm1 <- NVTdataobj@exp1
+               NVTdataobj@norm2 <- NVTdataobj@exp2
+               NVTdataobj@is_norm = FALSE
+             }else{
 
+             NVTdataobj@norm_method_name="Transcripts Per Million mapped reads (TPM)"
              li <- NVTdataobj@length
              ml <- mean (NVTdataobj@length[,1])
 
@@ -322,6 +349,8 @@ NVTnormalize <- function(NVTdataobj) {
              #NVTdataobj@norm2 <- ml*RPKM2/sum(RPKM2)*10^3
              RPK2 <- ci2/(li/1000)
              NVTdataobj@norm2 <- as.data.frame(RPK2/(sum(RPK2)/10^6))
+             NVTdataobj@is_norm = TRUE
+            }
            },
            G={
              print ("Normalization by given gene-set!")
@@ -332,7 +361,7 @@ NVTnormalize <- function(NVTdataobj) {
              gn2 <- mean(NVTdataobj@exp2[NVTdataobj@hklist,])
              NVTdataobj@norm1 <- as.data.frame(NVTdataobj@exp1/gn1)
              NVTdataobj@norm2 <- as.data.frame(NVTdataobj@exp2/gn2)
-
+             NVTdataobj@is_norm = TRUE
            },
            {
              print ("No normalization!")
@@ -340,6 +369,7 @@ NVTnormalize <- function(NVTdataobj) {
 
              NVTdataobj@norm1 <- NVTdataobj@exp1
              NVTdataobj@norm2 <- NVTdataobj@exp2
+             NVTdataobj@is_norm = TRUE
            }
     )
 
@@ -413,16 +443,15 @@ NVTplot <- function(NVTdataobj) {
          ,pch=20,col=rgb(193,205,205,90,maxColorValue=255),xlim=c(min, max),ylim=c(min, max))
     mtext(paste(NVTdataobj@norm_method_name,"normalized"),font=3)
 
+    fm <- lm(m[,2] ~ m[,1])
+    #print lines
+    abline(0, 1, lwd = 1, lty = 2, col=rgb(0,0,0,150,maxColorValue=255))
+    abline(fm, col = "red")
+
     #add hk genes
-    points(m1,m2,col="blue",pch=19)
+    points(m1,m2,col="blue",pch=20)
     #hk gene names
     text(m1,m2,NVTdataobj@hklist,cex=0.6, pos=4, col = "blue")
-
-    fm <- lm(m[,2] ~ m[,1])
-
-    #print lines
-    abline(0, 1, lwd = 1, lty = 2, col=rgb(193,205,205,255,maxColorValue=255))
-    abline(fm, col = "red")
 
   }else{
     stop("Not a valid NVTdata object with normalized values!")
@@ -495,12 +524,19 @@ NVTadvancedplot <- function(NVTdataobj) {
      #empty plot as spacing of the density plots
      #empty <- ggplot()+geom_point(aes(1,1), colour="white") +  theme(plot.background = element_blank(), panel.grid.major = element_blank(),  panel.grid.minor = element_blank(), panel.border = element_blank(),  panel.background = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_blank(), axis.text.y = element_blank(), axis.ticks = element_blank())
 
-     d <-  ggplot2::ggplot(data=myl, ggplot2::aes(x = l1, y = l2)) + ggplot2::geom_point(shape=16, alpha = 0.3,  color="gray")
-     d <- d + ggplot2::geom_point(data=subset(myl,names %in% NVTdataobj@hklist), ggplot2::aes(x = l1, y = l2), alpha = 1,  color="blue")
-     d <- d + ggplot2::geom_text(data=subset(myl,names %in% NVTdataobj@hklist), ggplot2::aes(label=names),hjust=-0.2, vjust=0.5,  color="blue", size=3)
-     d <- d + ggplot2::geom_smooth(data=subset(myl,names %in% NVTdataobj@hklist), method=lm,fullrange=TRUE, se=FALSE, color="red")
+     d <-  ggplot2::ggplot(data=myl, ggplot2::aes(x = l1, y = l2)) + ggplot2::geom_point( alpha = 0.2,  color="gray")
+     d <- d + ggplot2::geom_abline(intercept = 0, slope = 1, alpha = 0.5, linetype=2, color="black")
+     d <- d + ggplot2::geom_smooth(data=subset(myl,names %in% NVTdataobj@hklist), method=lm,fullrange=TRUE, se=FALSE,alpha = 0.1, color="red",lwd = 0.5)
+     d <- d + ggplot2::geom_point(data=subset(myl,names %in% NVTdataobj@hklist), ggplot2::aes(x = l1, y = l2), alpha = 0.8,  color="blue")
+
+     #tested labeling with directlabels
+     #if (requireNamespace("directlabels", quietly = TRUE)  ) {
+     # d <- d + directlabels::geom_dl(mapping=ggplot2::aes(label=names), data=subset(myl,names %in% NVTdataobj@hklist), method="top.bumptwice",inherit.aes = TRUE, color="blue", size=2)
+     #}else{
+      # print("directlabels not found, printing normal labels")
+
+     d <- d + ggplot2::geom_text(data=subset(myl,names %in% NVTdataobj@hklist), ggplot2::aes(label=names), hjust=-0.2, vjust=0.5, color="blue", size=3)
      d <- d + ggplot2::ggtitle(bquote(atop(.(paste("Scatter plot of:", names(NVTdataobj@norm1),"vs",names(NVTdataobj@norm2))), atop(italic(.(paste(NVTdataobj@norm_method_name,"normalized"))), "")))) + ggplot2::xlab(paste("log( normalized expression",names(NVTdataobj@norm1),")"))+ ggplot2::ylab(paste("log( normalized expression",names(NVTdataobj@norm2),")"))
-     d <- d + ggplot2::geom_abline(intercept = 0, slope = 1, alpha = 0.9, linetype=2, color="gray")
      d <- d + ggplot2::geom_rug(col="darkred",alpha=.1,position='jitter')
      d
 
@@ -545,12 +581,22 @@ NVTpearson <- function(NVTdataobj) {
      && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
      && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)
      && exists_hkgene_list(NVTdataobj,NVTdataobj@hklist)){
+    if(NVTdataobj@is_norm ){
 
-    m1 <- NVTdataobj@norm1[1][NVTdataobj@hklist,]
-    m2 <- NVTdataobj@norm2[1][NVTdataobj@hklist,]
+      m1 <- NVTdataobj@norm1[1][NVTdataobj@hklist,]
+      m2 <- NVTdataobj@norm2[1][NVTdataobj@hklist,]
 
-    pearson <- cor(m1,m2,method="pearson")
-    return(pearson)
+      #pearson <- cor(m1,m2,method="pearson")
+      pearson <- cor.test(m1,m2,method="pearson")
+      names(pearson$p.value) <- "p-value"
+      names(pearson$estimate) <- "pearson"
+
+      #return(pearson)
+      return(c(pearson$estimate,pearson$p.value))
+
+    }else{
+      return(c("NA","NA"))
+    }
 
   }else{
     stop("Not a valid NVTdata object with normalized values!")
@@ -575,18 +621,29 @@ NVTpearson <- function(NVTdataobj) {
 #'NVTtestall(mynvt)
 NVTtestall <- function(NVTdataobj) {
   tmpNVT <- NVTdataobj
-  pv <- vector()
+  first=TRUE
 
   #test all methods and extract pearson correlation
   for (n in method_v) {
+    if(first){
+      tmpNVT@norm_method <- n
+      tmpnorm <- NVTnormalize(tmpNVT)
+      p <- NVTpearson(tmpnorm)
+      pf <- p
+      first=FALSE
+    }else{
+
     tmpNVT@norm_method <- n
     tmpnorm <- NVTnormalize(tmpNVT)
     p <- NVTpearson(tmpnorm)
-    pv <-append(pv,p)
+    #pv <-append(pv,p)
+    pf <- rbind(pf,p)
+   }
   }
-  pearson <- as.data.frame(cbind(method_v,pv))
-  spearson <- pearson[order(pearson$pv,decreasing = T),]
-  names(spearson) <- c("Normalization_method","Pearson_value")
+
+  rownames(pf) <- method_v
+  spearson <- pf[order(pf[,1,drop=FALSE],pf[,2,drop=FALSE],decreasing = T),]
+
   return(spearson)
 }
 
