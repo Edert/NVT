@@ -440,7 +440,7 @@ NVTplot <- function(NVTdataobj) {
     plot(l1,l2,main=paste("Scatter plot of:", names(NVTdataobj@norm1),"vs.",names(NVTdataobj@norm2)),
          xlab=paste("log( normalized expression",names(NVTdataobj@norm1),")"),
          ylab=paste("log( normalized expression",names(NVTdataobj@norm2),")")
-         ,pch=20,col=rgb(193,205,205,90,maxColorValue=255),xlim=c(min, max),ylim=c(min, max))
+         ,pch=20,col=rgb(193,205,205,50,maxColorValue=255),xlim=c(min, max),ylim=c(min, max))
     mtext(paste(NVTdataobj@norm_method_name,"normalized"),font=3)
 
     fm <- lm(m[,2] ~ m[,1])
