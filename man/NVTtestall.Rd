@@ -2,18 +2,20 @@
 % Please edit documentation in R/NVT-init.R
 \name{NVTtestall}
 \alias{NVTtestall}
-\title{Calculate the pearson correclation of the housekeeping genes of an initialized NVTobject for all normalization methods}
+\title{Calculate the chosen correclation of the housekeeping genes of an initialized NVTobject for all normalization methods}
 \usage{
-NVTtestall(NVTdataobj)
+NVTtestall(NVTdataobj, cmethod)
 }
 \arguments{
 \item{NVTdataobj}{A previously initialzed and normalized NVTobject}
+
+\item{cmethod}{Pearson correlation (p), root mean square deviation (rmsd) or mean absolute error (mae)}
 }
 \value{
 Sorted pearson correlations of the normalized housekeeping genes between the samples
 }
 \description{
-Calculate the pearson correclation of the housekeeping genes of an initialized NVTobject for all normalization methods
+Calculate the chosen correclation of the housekeeping genes of an initialized NVTobject for all normalization methods
 }
 \examples{
 library("NVT")
@@ -24,6 +26,6 @@ mylist1=c("CT462","CT115","CT045","CT678")
 
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"N",mylen)
 
-NVTtestall(mynvt)
+NVTtestall(mynvt,"p")
 }
 

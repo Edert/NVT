@@ -1,5 +1,6 @@
 #global methods availible
 method_v <- c("N","TC","Med","TMM","UQ","UQ2","Q","RPKM","RPM","DEQ","TPM","G")
+method_c <- c("p","rmsd","mae")
 
 #'Initialize and load input data into a NVTobject
 #'
@@ -603,11 +604,96 @@ NVTpearson <- function(NVTdataobj) {
   }
 }
 
+#'Calculate the root mean squared deviation (RMSD) of the housekeeping genes of an initialized and normalized NVTobject
+#'
+#'@export
+#'@param NVTdataobj A previously initialized and normalized NVTobject
+#'@return root mean squared deviation (RMSD) of the normalized housekeeping genes between the samples
+#'@examples
+#'library("NVT")
+#'data(myexp1)
+#'data(myexp2)
+#'data(mylen)
+#'mylist1=c("CT462","CT115","CT045","CT678")
+#'
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM")
+#'mynorm <- NVTnormalize(mynvt)
+#'
+#'NVTrmsd(mynorm)
+NVTrmsd <- function(NVTdataobj) {
+  if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
+     && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
+     && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)
+     && exists_hkgene_list(NVTdataobj,NVTdataobj@hklist)){
+    if(NVTdataobj@is_norm ){
 
-#'Calculate the pearson correclation of the housekeeping genes of an initialized NVTobject for all normalization methods
+      m1 <- NVTdataobj@norm1[1][NVTdataobj@hklist,]
+      m2 <- NVTdataobj@norm2[1][NVTdataobj@hklist,]
+
+      mydif <- m1 - m2
+      rmsd <- sqrt(mean(mydif^2))
+
+      names(rmsd) <- "RMSD"
+
+      return(rmsd)
+
+    }else{
+      return("NA")
+    }
+
+  }else{
+    stop("Not a valid NVTdata object with normalized values!")
+  }
+}
+
+
+#'Calculate the mean absolute error (MAE) of the housekeeping genes of an initialized and normalized NVTobject
+#'
+#'@export
+#'@param NVTdataobj A previously initialized and normalized NVTobject
+#'@return mean absolute error (MAE) of the normalized housekeeping genes between the samples
+#'@examples
+#'library("NVT")
+#'data(myexp1)
+#'data(myexp2)
+#'data(mylen)
+#'mylist1=c("CT462","CT115","CT045","CT678")
+#'
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM")
+#'mynorm <- NVTnormalize(mynvt)
+#'
+#'NVTmae(mynorm)
+NVTmae <- function(NVTdataobj) {
+  if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
+     && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
+     && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)
+     && exists_hkgene_list(NVTdataobj,NVTdataobj@hklist)){
+    if(NVTdataobj@is_norm ){
+
+      m1 <- NVTdataobj@norm1[1][NVTdataobj@hklist,]
+      m2 <- NVTdataobj@norm2[1][NVTdataobj@hklist,]
+
+      mydif <- m1 - m2
+      mae <- mean(abs(mydif))
+
+      names(mae) <- "RMSD"
+
+      return(mae)
+
+    }else{
+      return("NA")
+    }
+
+  }else{
+    stop("Not a valid NVTdata object with normalized values!")
+  }
+}
+
+#'Calculate the chosen correclation of the housekeeping genes of an initialized NVTobject for all normalization methods
 #'
 #'@export
 #'@param NVTdataobj A previously initialzed and normalized NVTobject
+#'@param cmethod Pearson correlation (p), root mean square deviation (rmsd) or mean absolute error (mae)
 #'@return Sorted pearson correlations of the normalized housekeeping genes between the samples
 #'@examples
 #'library("NVT")
@@ -618,33 +704,49 @@ NVTpearson <- function(NVTdataobj) {
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N",mylen)
 #'
-#'NVTtestall(mynvt)
-NVTtestall <- function(NVTdataobj) {
+#'NVTtestall(mynvt,"p")
+NVTtestall <- function(NVTdataobj, cmethod) {
   tmpNVT <- NVTdataobj
   first=TRUE
+  check_cmethod(cmethod)
 
-  #test all methods and extract pearson correlation
+  #test all methods and extract correlation value
   for (n in method_v) {
+    tmpNVT@norm_method <- n
+    tmpnorm <- NVTnormalize(tmpNVT)
+
+    switch(cmethod,
+           p={
+             p <- NVTpearson(tmpnorm)
+           },
+           rmsd={
+             p <- NVTrmsd(tmpnorm)
+           },
+           mae={
+             p <- NVTmae(tmpnorm)
+           },
+           {
+             stop("Invalid correlation calculation method!")
+           }
+    )
+
     if(first){
-      tmpNVT@norm_method <- n
-      tmpnorm <- NVTnormalize(tmpNVT)
-      p <- NVTpearson(tmpnorm)
       pf <- p
       first=FALSE
     }else{
-
-    tmpNVT@norm_method <- n
-    tmpnorm <- NVTnormalize(tmpNVT)
-    p <- NVTpearson(tmpnorm)
-    #pv <-append(pv,p)
-    pf <- rbind(pf,p)
-   }
+      pf <- rbind(pf,p)
+    }
   }
 
   rownames(pf) <- method_v
-  spearson <- pf[order(pf[,1,drop=FALSE],pf[,2,drop=FALSE],decreasing = T),]
 
-  return(spearson)
+  if(cmethod == "p"){#order pearson
+    results <- pf[order(pf[,1,drop=FALSE],pf[,2,drop=FALSE],decreasing = T),]
+  }else{#order other methods with just one value
+    results <- pf[order(pf[,1,drop=FALSE],decreasing = F),]
+  }
+
+  return(results)
 }
 
 
@@ -760,6 +862,18 @@ check_norm_list <- function(norm_list) {
 #'@return true or false
 check_method <- function(norm_method) {
   if( norm_method %in% method_v ){
+    return(TRUE)
+  }else{
+    stop("Unknown method specified!")
+  }
+}
+
+#'Check correlation method
+#'
+#'@param c_method Normalization method
+#'@return true or false
+check_cmethod <- function(c_method) {
+  if( c_method %in% method_c ){
     return(TRUE)
   }else{
     stop("Unknown method specified!")
