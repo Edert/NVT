@@ -207,45 +207,35 @@ Instead of using a simple flat file, it is also possible to load the gene or exo
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{png}\hlstd{(}\hlkwc{filename} \hlstd{=} \hlstr{"figure/simpleplot.png"}\hlstd{,} \hlkwc{width} \hlstd{=} \hlnum{580}\hlstd{,} \hlkwc{height} \hlstd{=} \hlnum{580}\hlstd{,} \hlkwc{units} \hlstd{=} \hlstr{"px"}\hlstd{,} \hlkwc{pointsize} \hlstd{=} \hlnum{12}\hlstd{)}
-\hlkwd{NVTplot}\hlstd{(mynorm,}\hlnum{1}\hlstd{)}
-\hlkwd{dev.off}\hlstd{()}
+\hlkwd{NVTplot}\hlstd{(mynorm,}\hlnum{0.5}\hlstd{)}
 \end{alltt}
-\begin{verbatim}
-## png 
-##   2
-\end{verbatim}
 \end{kframe}
 \end{knitrout}
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\textwidth]{figure/simpleplot}
+\includegraphics[width=.8\textwidth]{figure/simpleplot-1}
 \caption{
   \textbf{Simple XY-Scatter-Plot.}
   This plot shows the simple NVT plot function result}
 \label{fig:MA}
 \end{figure}
 
+\newpage
+
 \subsubsection{Advanced plot}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
-\hlkwd{png}\hlstd{(}\hlkwc{filename} \hlstd{=} \hlstr{"figure/advancedplot.png"}\hlstd{,} \hlkwc{width} \hlstd{=} \hlnum{580}\hlstd{,} \hlkwc{height} \hlstd{=} \hlnum{580}\hlstd{,} \hlkwc{units} \hlstd{=} \hlstr{"px"}\hlstd{,} \hlkwc{pointsize} \hlstd{=} \hlnum{12}\hlstd{)}
-\hlkwd{NVTadvancedplot}\hlstd{(mynorm,}\hlnum{2}\hlstd{,}\hlnum{2}\hlstd{,}\hlnum{4}\hlstd{)}
-\hlkwd{dev.off}\hlstd{()}
+\hlkwd{NVTadvancedplot}\hlstd{(mynorm,}\hlnum{1}\hlstd{,}\hlnum{1}\hlstd{,}\hlnum{2}\hlstd{)}
 \end{alltt}
-\begin{verbatim}
-## png 
-##   2
-\end{verbatim}
 \end{kframe}
 \end{knitrout}
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\textwidth]{figure/advancedplot}
+\includegraphics[width=.8\textwidth]{figure/advancedplot-1}
 \caption{
   \textbf{Advanced XY-Scatter-Plot.}
   This plot shows the advanced NVT plot function result}

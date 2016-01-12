@@ -128,32 +128,30 @@ mynorm <- NVTnormalize(mynvt)
 
 \subsubsection{Simple plot}
 
-<<simpleplot>>=
-png(filename = "figure/simpleplot.png", width = 580, height = 580, units = "px", pointsize = 12)
-NVTplot(mynorm,1)
-dev.off()
+<<simpleplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
+NVTplot(mynorm,0.5)
 @
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\textwidth]{figure/simpleplot}
+\includegraphics[width=.8\textwidth]{figure/simpleplot-1}
 \caption{
   \textbf{Simple XY-Scatter-Plot.}
   This plot shows the simple NVT plot function result}
 \label{fig:MA}
 \end{figure}
 
+\newpage
+
 \subsubsection{Advanced plot}
 
-<<advancedplot>>=
-png(filename = "figure/advancedplot.png", width = 580, height = 580, units = "px", pointsize = 12)
-NVTadvancedplot(mynorm,2,2,4)
-dev.off()
+<<advancedplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
+NVTadvancedplot(mynorm,1,1,2)
 @
 
 \begin{figure}
 \centering
-\includegraphics[width=.8\textwidth]{figure/advancedplot}
+\includegraphics[width=.8\textwidth]{figure/advancedplot-1}
 \caption{
   \textbf{Advanced XY-Scatter-Plot.}
   This plot shows the advanced NVT plot function result}
