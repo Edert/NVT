@@ -7,10 +7,10 @@ Author: Thomas Eder
 Maintainer: Thomas Eder <Thomas.Eder@lbicr.lbg.ac.at>
 Description: This tool normalizes gene expression data from two samples and plots the results as XY-scatter-plots, highlighting the previously defined gene set and the linear model based these genes. In addition it is possible to calculate their Pearson correlation and test and rank all normalization methods based on this correlation.
 License: GPL-3
-LazyData: TRUE
+LazyData: true
 RoxygenNote: 5.0.1
 Depends: R (>= 3.1.0)
 Imports:
-Suggests: limma, NOISeq, DESeq, DESeq2, methods, ggplot2, GenomicRanges, rtracklayer, S4Vectors
-LazyData: true
+Suggests: limma, NOISeq, DESeq, DESeq2, methods, ggplot2, GenomicRanges, rtracklayer, S4Vectors, knitr, BiocStyle
 URL: https://github.com/NexusX/NVT
+VignetteBuilder: knitr

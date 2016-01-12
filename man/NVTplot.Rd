@@ -4,10 +4,14 @@
 \alias{NVTplot}
 \title{Plot the MA-plot of a NVTobject}
 \usage{
-NVTplot(NVTdataobj)
+NVTplot(NVTdataobj, cex = 1, ...)
 }
 \arguments{
 \item{NVTdataobj}{A previously initialized and normalized NVTobject}
+
+\item{cex}{Scaling of points and text relative to the default [default=1]}
+
+\item{...}{Arguments passed on to the plot function}
 }
 \value{
 Plots the MA-plot with the housekeeping genes indicated
@@ -25,6 +29,6 @@ mylist1=c("CT462","CT115","CT045","CT678")
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 mynorm <- NVTnormalize(mynvt)
 
-NVTplot(mynorm)
+NVTplot(mynorm,0.8)
 }
 

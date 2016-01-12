@@ -4,10 +4,16 @@
 \alias{NVTadvancedplot}
 \title{Plot the MA-plot of a NVTobject with ggplot2}
 \usage{
-NVTadvancedplot(NVTdataobj)
+NVTadvancedplot(NVTdataobj, p_cex = 1, t_cex = 1, l_cex = 1)
 }
 \arguments{
 \item{NVTdataobj}{A previously initialized and normalized NVTobject}
+
+\item{p_cex}{Point size factor [default = 1]}
+
+\item{t_cex}{Title size factor [default = 1]}
+
+\item{l_cex}{Label size factor [default = 1]}
 }
 \value{
 Plots the MA-plot with the housekeeping genes indicated
@@ -25,6 +31,6 @@ mylist1=c("CT462","CT115","CT045","CT678")
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 mynorm <- NVTnormalize(mynvt)
 
-NVTadvancedplot(mynorm)
+NVTadvancedplot(mynorm,2,2,2)
 }
 

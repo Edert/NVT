@@ -390,6 +390,8 @@ NVTnormalize <- function(NVTdataobj) {
 #'
 #'@export
 #'@param NVTdataobj A previously initialized and normalized NVTobject
+#'@param cex Scaling of points and text relative to the default [default=1]
+#'@param ... Arguments passed on to the plot function
 #'@return Plots the MA-plot with the housekeeping genes indicated
 #'@examples
 #'library("NVT")
@@ -401,8 +403,8 @@ NVTnormalize <- function(NVTdataobj) {
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 #'mynorm <- NVTnormalize(mynvt)
 #'
-#'NVTplot(mynorm)
-NVTplot <- function(NVTdataobj) {
+#'NVTplot(mynorm,0.8)
+NVTplot <- function(NVTdataobj, cex=1,  ...) {
   if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
      && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
      && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)
@@ -441,8 +443,8 @@ NVTplot <- function(NVTdataobj) {
     plot(l1,l2,main=paste("Scatter plot of:", names(NVTdataobj@norm1),"vs.",names(NVTdataobj@norm2)),
          xlab=paste("log( normalized expression",names(NVTdataobj@norm1),")"),
          ylab=paste("log( normalized expression",names(NVTdataobj@norm2),")")
-         ,pch=20,col=rgb(193,205,205,50,maxColorValue=255),xlim=c(min, max),ylim=c(min, max))
-    mtext(paste(NVTdataobj@norm_method_name,"normalized"),font=3)
+         ,pch=20,col=rgb(193,205,205,50,maxColorValue=255),xlim=c(min, max),ylim=c(min, max),cex.lab = cex,cex.main = cex, cex.axis = cex,cex = cex, ...)
+    mtext(paste(NVTdataobj@norm_method_name,"normalized"),cex=cex)
 
     fm <- lm(m[,2] ~ m[,1])
     #print lines
@@ -450,9 +452,10 @@ NVTplot <- function(NVTdataobj) {
     abline(fm, col = "red")
 
     #add hk genes
-    points(m1,m2,col="blue",pch=20)
+    points(m1,m2,col="blue",pch=20,cex=cex)
     #hk gene names
-    text(m1,m2,NVTdataobj@hklist,cex=0.6, pos=4, col = "blue")
+    text(m1,m2,NVTdataobj@hklist, pos=4, col = "blue",cex=cex)
+    #text(m1,m2,NVTdataobj@hklist,cex=0.6, pos=4, col = "blue")
 
   }else{
     stop("Not a valid NVTdata object with normalized values!")
@@ -463,6 +466,9 @@ NVTplot <- function(NVTdataobj) {
 #'
 #'@export
 #'@param NVTdataobj A previously initialized and normalized NVTobject
+#'@param p_cex Point size factor [default = 1]
+#'@param t_cex Title size factor [default = 1]
+#'@param l_cex Label size factor [default = 1]
 #'@return Plots the MA-plot with the housekeeping genes indicated
 #'@examples
 #'library("NVT")
@@ -474,8 +480,8 @@ NVTplot <- function(NVTdataobj) {
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 #'mynorm <- NVTnormalize(mynvt)
 #'
-#'NVTadvancedplot(mynorm)
-NVTadvancedplot <- function(NVTdataobj) {
+#'NVTadvancedplot(mynorm,2,2,2)
+NVTadvancedplot <- function(NVTdataobj,p_cex=1,t_cex=1,l_cex=1) {
 
   if (requireNamespace("ggplot2", quietly = TRUE)  ) {
   #only needed for dsensity plots
@@ -525,10 +531,10 @@ NVTadvancedplot <- function(NVTdataobj) {
      #empty plot as spacing of the density plots
      #empty <- ggplot()+geom_point(aes(1,1), colour="white") +  theme(plot.background = element_blank(), panel.grid.major = element_blank(),  panel.grid.minor = element_blank(), panel.border = element_blank(),  panel.background = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_blank(), axis.text.y = element_blank(), axis.ticks = element_blank())
 
-     d <-  ggplot2::ggplot(data=myl, ggplot2::aes(x = l1, y = l2)) + ggplot2::geom_point( alpha = 0.2,  color="gray")
+     d <-  ggplot2::ggplot(data=myl, ggplot2::aes(x = l1, y = l2)) + ggplot2::geom_point( alpha = 0.2,  color="gray", cex=p_cex)
      d <- d + ggplot2::geom_abline(intercept = 0, slope = 1, alpha = 0.5, linetype=2, color="black")
      d <- d + ggplot2::geom_smooth(data=subset(myl,names %in% NVTdataobj@hklist), method=lm,fullrange=TRUE, se=FALSE,alpha = 0.1, color="red",lwd = 0.5)
-     d <- d + ggplot2::geom_point(data=subset(myl,names %in% NVTdataobj@hklist), ggplot2::aes(x = l1, y = l2), alpha = 0.8,  color="blue")
+     d <- d + ggplot2::geom_point(data=subset(myl,names %in% NVTdataobj@hklist), ggplot2::aes(x = l1, y = l2), alpha = 0.8,  color="blue", cex=p_cex)
 
      #tested labeling with directlabels
      #if (requireNamespace("directlabels", quietly = TRUE)  ) {
@@ -536,9 +542,12 @@ NVTadvancedplot <- function(NVTdataobj) {
      #}else{
       # print("directlabels not found, printing normal labels")
 
-     d <- d + ggplot2::geom_text(data=subset(myl,names %in% NVTdataobj@hklist), ggplot2::aes(label=names), hjust=-0.2, vjust=0.5, color="blue", size=3)
-     d <- d + ggplot2::ggtitle(bquote(atop(.(paste("Scatter plot of:", names(NVTdataobj@norm1),"vs",names(NVTdataobj@norm2))), atop(italic(.(paste(NVTdataobj@norm_method_name,"normalized"))), "")))) + ggplot2::xlab(paste("log( normalized expression",names(NVTdataobj@norm1),")"))+ ggplot2::ylab(paste("log( normalized expression",names(NVTdataobj@norm2),")"))
+     d <- d + ggplot2::geom_text(data=subset(myl,names %in% NVTdataobj@hklist), ggplot2::aes(label=names), hjust=-0.2, vjust=0.5, color="blue", cex=l_cex)
+     d <- d + ggplot2::ggtitle(bquote(atop(.(paste("Scatter plot of:", names(NVTdataobj@norm1),"vs",names(NVTdataobj@norm2))), atop(italic(.(paste(NVTdataobj@norm_method_name,"normalized"))), ""))))
+     d <- d + ggplot2::xlab(paste("log( normalized expression",names(NVTdataobj@norm1),")"))
+     d <- d + ggplot2::ylab(paste("log( normalized expression",names(NVTdataobj@norm2),")"))
      d <- d + ggplot2::geom_rug(col="darkred",alpha=.1,position='jitter')
+     d <- d + ggplot2::theme(axis.title.x = ggplot2::element_text(size = 10 * t_cex), axis.title.y = ggplot2::element_text(size = 10 * t_cex), plot.title = ggplot2::element_text(size = 10 * t_cex), axis.text.x = ggplot2::element_text(size = 10 * t_cex), axis.text.y = ggplot2::element_text(size = 10 * t_cex) )
      d
 
      #desnity plots
