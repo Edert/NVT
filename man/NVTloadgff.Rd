@@ -23,14 +23,10 @@ Load a gff2 (gtf) or gff3 file, this may take a while depending on the file-size
 }
 \examples{
 library("NVT")
-data(myexp1)
-data(myexp2)
+
 #get test GFF-file provided by this library
 mygffpath<-system.file("extdata", "Ctr-D-UW3CX.gff", package = "NVT")
 
 mylen <- NVTloadgff(mygffpath,"gff3","gene","locus_tag")
-mylist1 <- c("CT462","CT115","CT045","CT678")
-
-mynvt <- NVTinit(mylist1,myexp1,myexp2,"N",mylen)
 }
 

@@ -10,7 +10,7 @@ NVTmae(NVTdataobj)
 \item{NVTdataobj}{A previously initialized and normalized NVTobject}
 }
 \value{
-mean absolute error (MAE) of the normalized housekeeping genes between the samples
+Mean absolute error (MAE) of the normalized housekeeping genes between the samples
 }
 \description{
 Calculate the mean absolute error (MAE) of the housekeeping genes of an initialized and normalized NVTobject
@@ -20,7 +20,8 @@ library("NVT")
 data(myexp1)
 data(myexp2)
 data(mylen)
-mylist1=c("CT462","CT115","CT045","CT678")
+mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
+"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM")
 mynorm <- NVTnormalize(mynvt)

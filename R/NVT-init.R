@@ -16,7 +16,8 @@ method_c <- c("p","rmsd","mae")
 #'data(myexp1)
 #'data(myexp2)
 #'data(mylen)
-#'mylist1=c("CT462","CT115","CT045","CT678")
+#'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
+#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 #'mynvt2 <- NVTinit(mylist1,myexp1,myexp2,"RPKM",mylen)
@@ -34,7 +35,6 @@ NVTinit <- function(housekeeping_gene_list, expression_list_1, expression_list_2
   if (missing('normalization_method')){
     stop("No method specified!")
   }
-
 
   if( all(rownames(expression_list_1) %in% rownames(expression_list_2)) && all(rownames(expression_list_2) %in% rownames(expression_list_1))  ){
 
@@ -80,10 +80,13 @@ NVTinit <- function(housekeeping_gene_list, expression_list_1, expression_list_2
 #'@return A normalized NVTobject
 #'@examples
 #'library("NVT")
+#'
 #'data(myexp1)
 #'data(myexp2)
 #'data(mylen)
-#'mylist1=c("CT462","CT115","CT045","CT678")
+#'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
+#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
+#'
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N",mylen)
 #'
@@ -398,7 +401,8 @@ NVTnormalize <- function(NVTdataobj) {
 #'data(myexp1)
 #'data(myexp2)
 #'data(mylen)
-#'mylist1=c("CT462","CT115","CT045","CT678")
+#'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
+#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 #'mynorm <- NVTnormalize(mynvt)
@@ -475,7 +479,8 @@ NVTplot <- function(NVTdataobj, cex=1,  ...) {
 #'data(myexp1)
 #'data(myexp2)
 #'data(mylen)
-#'mylist1=c("CT462","CT115","CT045","CT678")
+#'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
+#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 #'mynorm <- NVTnormalize(mynvt)
@@ -580,7 +585,8 @@ NVTadvancedplot <- function(NVTdataobj,p_cex=1,t_cex=1,l_cex=1) {
 #'data(myexp1)
 #'data(myexp2)
 #'data(mylen)
-#'mylist1=c("CT462","CT115","CT045","CT678")
+#'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
+#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM")
 #'mynorm <- NVTnormalize(mynvt)
@@ -617,13 +623,14 @@ NVTpearson <- function(NVTdataobj) {
 #'
 #'@export
 #'@param NVTdataobj A previously initialized and normalized NVTobject
-#'@return root mean squared deviation (RMSD) of the normalized housekeeping genes between the samples
+#'@return Root mean squared deviation (RMSD) of the normalized housekeeping genes between the samples
 #'@examples
 #'library("NVT")
 #'data(myexp1)
 #'data(myexp2)
 #'data(mylen)
-#'mylist1=c("CT462","CT115","CT045","CT678")
+#'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
+#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM")
 #'mynorm <- NVTnormalize(mynvt)
@@ -660,13 +667,14 @@ NVTrmsd <- function(NVTdataobj) {
 #'
 #'@export
 #'@param NVTdataobj A previously initialized and normalized NVTobject
-#'@return mean absolute error (MAE) of the normalized housekeeping genes between the samples
+#'@return Mean absolute error (MAE) of the normalized housekeeping genes between the samples
 #'@examples
 #'library("NVT")
 #'data(myexp1)
 #'data(myexp2)
 #'data(mylen)
-#'mylist1=c("CT462","CT115","CT045","CT678")
+#'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
+#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM")
 #'mynorm <- NVTnormalize(mynvt)
@@ -685,7 +693,7 @@ NVTmae <- function(NVTdataobj) {
       mydif <- m1 - m2
       mae <- mean(abs(mydif))
 
-      names(mae) <- "RMSD"
+      names(mae) <- "MAE"
 
       return(mae)
 
@@ -703,13 +711,14 @@ NVTmae <- function(NVTdataobj) {
 #'@export
 #'@param NVTdataobj A previously initialzed and normalized NVTobject
 #'@param cmethod Pearson correlation (p), root mean square deviation (rmsd) or mean absolute error (mae)
-#'@return Sorted pearson correlations of the normalized housekeeping genes between the samples
+#'@return Sorted pearson correlation coefficients, RMSD or MAE of the normalized housekeeping genes between the samples
 #'@examples
 #'library("NVT")
 #'data(myexp1)
 #'data(myexp2)
 #'data(mylen)
-#'mylist1=c("CT462","CT115","CT045","CT678")
+#'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
+#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N",mylen)
 #'
@@ -769,15 +778,11 @@ NVTtestall <- function(NVTdataobj, cmethod) {
 #'@return List of gene/exon names and their length
 #'@examples
 #'library("NVT")
-#'data(myexp1)
-#'data(myexp2)
+#'
 #'#get test GFF-file provided by this library
 #'mygffpath<-system.file("extdata", "Ctr-D-UW3CX.gff", package = "NVT")
 #'
 #'mylen <- NVTloadgff(mygffpath,"gff3","gene","locus_tag")
-#'mylist1 <- c("CT462","CT115","CT045","CT678")
-#'
-#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N",mylen)
 NVTloadgff <- function(gff_file, gff_version, gff_feature, gff_name) {
 
   if (requireNamespace("GenomicRanges", quietly = TRUE) && requireNamespace("rtracklayer", quietly = TRUE) && requireNamespace("S4Vectors", quietly = TRUE)) {
@@ -889,35 +894,32 @@ check_cmethod <- function(c_method) {
   }
 }
 
-#' List of lenght of each gene
+#' List of length of each gene
 #'
 #' A data set with each gene name and its length in nucleotides
 #'
-#' @format A data frame with 896 rows and 1 variable:
-#' \describe{
-#'   \item{length}{gene lenght in bp}
-#'   ...
+#' @format A data frame with 64102 rows and 1 variable:
+#' \itemize{
+#'   \item{Length}
 #' }
 "mylen"
 
 #' List of expression data of each gene
 #'
-#' A data set with each gene name and its expression in mapped reads, under hypoxic condictions
+#' A data set with each gene name and its expression
 #'
-#' @format A data frame with 896 rows and 1 variable:
-#' \describe{
-#'   \item{Mapped_reads_Hypoxy}{gene expression in mapped reads}
-#'   ...
+#' @format A data frame with 64102 rows and 1 variable:
+#' \itemize{
+#'   \item{GSM1275862}
 #' }
 "myexp1"
 
 #' List of expression data of each gene
 #'
-#' A data set with each gene name and its expression in mapped reads, under normoxic condictions
+#' A data set with each gene name and its expression
 #'
-#' @format A data frame with 896 rows and 1 variable:
-#' \describe{
-#'   \item{Mapped_reads_Normoxy}{gene expression in mapped reads}
-#'   ...
+#' @format A data frame with 64102 rows and 1 variable:
+#' \itemize{
+#'   \item{GSM1275863}
 #' }
 "myexp2"

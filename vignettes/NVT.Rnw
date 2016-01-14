@@ -16,8 +16,8 @@ opts_chunk$set(
   tidy=FALSE,
   dev="png",
   fig.show="hide",
-  fig.width=4, fig.height=4.5,
-  cache=TRUE,
+  #fig.width=4, fig.height=4.5,
+  #cache=TRUE,
   message=FALSE)
 @
 
@@ -55,14 +55,13 @@ Differential expression analysis, between two samples, is a common task in the a
       \\
       T. Eder, T.Rattei: \textbf{NVT: a fast and simple test for} \\
       \textbf{the evaluation of RNA-Seq normalization strategies}. \\
-      \emph{Bioinformatics} 2016, \textbf{15}:550. \\
-      \url{http://dx.doi.org/10.1186/s13059-014-0550-8}  \\
+      \emph{JournalXXX} 2016, \textbf{XX}:XXX. \\
+      \url{http://dx.doi.org/xxx/xxx}  \\
       \hline
     \end{tabular}
   \end{center}
 
 \end{abstract}
-
 
 \newpage
 
@@ -72,67 +71,122 @@ Differential expression analysis, between two samples, is a common task in the a
 
 \section{Installation}
 
-Download the latest NVT package from: \url{https://github.com/NexusX/NVT/releases} and install it with the following command.
+The latest NVT package can be downloaded from: \url{https://github.com/NexusX/NVT/releases}. The installation of the package can be done directly in R.
 
-<<installNVT,  eval=FALSE>>=
+<<installNVT, eval=FALSE>>=
 install.packages(file.path("/home/user/Downloads/","NVT_1.0.tar.gz"),
 repos=NULL, type="source")
-
 @
 
 \section{Standard work flow}
 
-\subsection{Load data}
-
-We need some gene expression data, load the example data provided with the package
+Initially the library has to be loaded, which provides access to the data examples \ref{sec:loaddata} and the \nvt functions.
 
 <<loadNVT>>=
 library("NVT")
 @
 
-\subsubsection{Load expression data}
+\subsection{Load data}
 
-load example data
+For the demonstration of the \nvt functions we need gene expression data, so we load the example data provided with the package. We use the two human expression data sets \textit{GSM1275862} and \textit{GSM1275863} from the \href{https://bioconductor.org/packages/release/data/experiment/html/airway.html}{airway}\cite{himes2014} package.
+
+\subsubsection{Load expression data} \label{sec:loaddata}
+
+We simply load the provided data sets \textit{myexp1} from \textit{GSM1275862}, \textit{myexp2} from \textit{GSM1275863} and the length data per gene as \textit{mylen}.
 
 <<loadExData>>=
 data(mylen)
 data(myexp1)
 data(myexp2)
-mylist1=c('CT462','CT115','CT045','CT678')
 @
+
+In order to evaluate the expression between the two RNA-seq expression samples, we have to define a list of human housekeeping genes \textit{GAPDH, ALB, ACTB, QARS, PGK2, HPRT1, ADA, PPIC} and \textit{POLR2L}.
+
+<<createList>>=
+mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624",
+           "ENSG00000172053","ENSG00000170950","ENSG00000165704",
+           "ENSG00000196839","ENSG00000177700")
+@
+
+\newpage
 
 \subsubsection{Load gene length data}
 
-Instead of using a simple flat file, it is also possible to load the gene or exon length data directly from an annotation file in gtf or gff format.
+Instead of using the length data generated directly in R or using a simple flat file, it is also possible to load the gene or exon length data directly from an annotation file in gtf or gff format.
 
-<<loadLengthData>>=
+<<loadLengthData, eval=FALSE>>=
 mygffpath<-system.file("extdata", "Ctr-D-UW3CX.gff", package = "NVT")
-mylen <- NVTloadgff(mygffpath,"gff3","gene","locus_tag")
-head(mylen)
-@
+mylen1 <- NVTloadgff(mygffpath,"gff3","gene","locus_tag")
 
+head(mylen1)
+@
 
 \subsection{Generate NVTdata objects}
 
-<<generateNVTobj>>=
+In the first step you need to generate an \textit{NVTdata} object with the \textit{NVTinit} function. Here you have to provide the list of housekeeping genes, the two gene expression samples and the normalization method. Optionally you can also add the gene or exon length data.
+
+The normalization methods are:
+\begin{itemize}
+ \item N = No normalization
+ \item TC = Total count normalization
+ \item Med = Median normalization
+ \item TMM = Trimmed Mean of M-values normalization,
+ \item UQ = Upper Quartile normalization
+ \item UQ2 = Upper Quartile normalization (from \href{https://www.bioconductor.org/packages/release/bioc/html/NOISeq.html}{NOISeq}\cite{tarazona2011})
+ \item Q = Quantile normalization
+ \item RPKM = Reads Per Kilobase per Million mapped reads normalization
+ \item RPM = Reads per Million mapped reads normalization
+ \item DEQ = normalization method included in the \href{https://www.bioconductor.org/packages/release/bioc/html/DESeq.html}{DESeq}\cite{anders2010} package
+ \item TPM = transcripts per million normalization
+ \item G = use the provided genes to normalize
+\end{itemize}
+
+For the most methods no length information is required.
+
+<<generateNVTobj1>>=
+mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM")
+@
+
+But for RPKM, RPM and TPM normalization the length data has to be provided.
+
+<<generateNVTobj2>>=
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"RPKM",mylen)
 @
 
+\newpage
+
 \subsubsection{Normalize the NVTdata }
+
+The now initialized \textit{NVTdata} object can be normalized in the next step.
 
 <<normlaizeNVTobj>>=
 mynorm <- NVTnormalize(mynvt)
 @
 
+If required the now normalized data can be retrieved easily.
+
+<<getnorm>>=
+mynvalues <- show(mynorm)
+
+head(mynvalues)
+@
+
 \subsection{Visualize expression data}
+
+One of the key features of \nvt is the plotting of the XY-Scatter-Plots. This can be done with two functions:
+\textit{NVTplot} and \textit{NVTadvancedplot}.
+
+\newpage
 
 \subsubsection{Simple plot}
 
+The normalized \textit{NVTdata} object can be visualized with the plot function. With the second parameter you can modify the size-ratio of the text and the data points. The linear model in red, is calculated with the data from the housekeeping genes only and the dashed grey line highlights the diagonal.
+
 <<simpleplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
-NVTplot(mynorm,0.5)
+NVTplot(mynorm,0.6)
 @
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
 \includegraphics[width=.8\textwidth]{figure/simpleplot-1}
 \caption{
@@ -145,11 +199,13 @@ NVTplot(mynorm,0.5)
 
 \subsubsection{Advanced plot}
 
+The \textit{NVTadvancedplot} plots via \href{https://cran.r-project.org/web/packages/ggplot2/index.html}{ggplot2} and the size parameters control data points, text and labels separately. Here we use the default values of 1 for the data points and the text and increase the labels of the housekeeping genes to 2. The density is visualized by the rug in dark red for x- and y-axis and the linear model of the housekeeping gene data is again shown in red and the diagonal is highlighted as grey dashed line.
+
 <<advancedplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
 NVTadvancedplot(mynorm,1,1,2)
 @
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
 \includegraphics[width=.8\textwidth]{figure/advancedplot-1}
 \caption{
@@ -158,20 +214,62 @@ NVTadvancedplot(mynorm,1,1,2)
 \label{fig:MA}
 \end{figure}
 
+\newpage
+
 \subsection{Correlation values}
+
+In addition to the graphical representation of the gene expression data, the correlation coefficients of the housekeeping genes of the two samples can be calculated.
 
 \subsubsection{Pearson correlation}
 
+The Pearson correlation coefficient of the normalized expression of the housekeeping genes is calculated with the following command, using an already normalized \textit{NVTdata} object.
+
+<<pearson>>=
+NVTpearson(mynorm)
+@
+
 \subsubsection{RMSD and MEA correlation}
+
+Root mean square error (RMSE) also called the root mean square deviation (RMSD) is calculated with the \textit{NVTrmsd} function.
+
+<<rmsd>>=
+NVTrmsd(mynorm)
+@
+
+Also the mean absolute error (MAE) it can be calculated and retrieved with the \textit{NVTmae} function.
+
+<<mae>>=
+NVTmae(mynorm)
+@
 
 \subsection{Test all methods}
 
+To test more normalization methods on the provided data sets in one step, the correlation coefficients of all implemented normalization methods can be calculated with the \textit{NVTtestall} function.
+It requires a normalized \textit{NVTdata} object and the correlation coefficient you are interested in. The methods can be defined with:
+\begin{itemize}
+ \item p = Pearson correlation
+ \item rmsd = root mean square deviation
+ \item mae = mean absolute error
+\end{itemize}
+
+<<testall>>=
+NVTtestall(mynorm,"p")
+@
 
 \section{Acknowledgments}
 
 We have benefited in the development of \nvt{} from the help and
 feedback of many individuals,
+
 \section{Session Info}
+
+<<sessInfo, results="asis", echo=FALSE>>=
+toLatex(sessionInfo())
+@
+
+<<resetOptions, results="hide", echo=FALSE>>=
+options(prompt="> ", continue="+ ")
+@
 
 \bibliography{library}
 

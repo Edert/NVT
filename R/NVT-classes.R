@@ -45,3 +45,35 @@ setClass(
     length=data.frame()
   )
 )
+
+#'Show method, to retrieve the normalized expression values
+#'
+#'@docType methods
+#'@name show
+#'@rdname show
+#'@aliases show,NVTdata-method
+#'@param object A previously initialized and normalized NVTobject
+#'@return Returns the normalized expression values of both samples
+#'@examples
+#'library("NVT")
+#'data(myexp1)
+#'data(myexp2)
+#'data(mylen)
+#'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
+#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
+#'
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
+#'mynorm <- NVTnormalize(mynvt)
+#'
+#'show(mynorm)
+#'@export
+setMethod(f = "show", signature = "NVTdata",
+          definition = function(object) {
+            if(check_norm_list(object@norm1)  && check_norm_list(object@norm2)){
+              myout <- cbind(object@norm1,object@norm2)
+              return(myout)
+            }else{
+              stop("Not a valid NVTdata object with normalized values!")
+            }
+          }
+)

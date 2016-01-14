@@ -4,16 +4,15 @@
 \name{myexp2}
 \alias{myexp2}
 \title{List of expression data of each gene}
-\format{A data frame with 896 rows and 1 variable:
-\describe{
-  \item{Mapped_reads_Normoxy}{gene expression in mapped reads}
-  ...
+\format{A data frame with 64102 rows and 1 variable:
+\itemize{
+  \item{GSM1275863}
 }}
 \usage{
 myexp2
 }
 \description{
-A data set with each gene name and its expression in mapped reads, under normoxic condictions
+A data set with each gene name and its expression
 }
 \keyword{datasets}
 

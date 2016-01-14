@@ -4,16 +4,15 @@
 \name{myexp1}
 \alias{myexp1}
 \title{List of expression data of each gene}
-\format{A data frame with 896 rows and 1 variable:
-\describe{
-  \item{Mapped_reads_Hypoxy}{gene expression in mapped reads}
-  ...
+\format{A data frame with 64102 rows and 1 variable:
+\itemize{
+  \item{GSM1275862}
 }}
 \usage{
 myexp1
 }
 \description{
-A data set with each gene name and its expression in mapped reads, under hypoxic condictions
+A data set with each gene name and its expression
 }
 \keyword{datasets}
 

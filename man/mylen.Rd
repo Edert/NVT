@@ -3,11 +3,10 @@
 \docType{data}
 \name{mylen}
 \alias{mylen}
-\title{List of lenght of each gene}
-\format{A data frame with 896 rows and 1 variable:
-\describe{
-  \item{length}{gene lenght in bp}
-  ...
+\title{List of length of each gene}
+\format{A data frame with 64102 rows and 1 variable:
+\itemize{
+  \item{Length}
 }}
 \usage{
 mylen
