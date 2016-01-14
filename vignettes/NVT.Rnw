@@ -40,7 +40,7 @@ BiocStyle::latex()
 
 \begin{abstract}
 
-Differential expression analysis, between two samples, is a common task in the analysis of RNA-Seq data. In order to identify differential expressed genes it is crucial that the two compared data sets are normalized. For the task of normalizing gene expression data there are multiple methods available. But all of them are based on certain assumptions that can or can not be meet by the data which should be normalized. An important question is, how the normalization affects the data and which normalization method and its assumptions blend well with the expression data. The \nvt{} package provides a fast and simple way to analyze multiple normalization methods via visualization and correlation values. This vignette explains the use of the package and demonstrates a typical work flow.
+Differential expression analysis between two samples, is a common task in the analysis of RNA-Seq data. In order to identify differential expressed genes, it is crucial that the two compared data sets are normalized. For the task of normalizing gene expression data there are multiple methods available. However all of these methods are based on certain assumptions, these can or can not be suitable for the data which should be normalized. One important question is, how the normalization affects the data and which normalization method and its assumptions apply to the expression data. The \nvt{} package provides a fast and simple way to analyze multiple normalization methods via visualization and correlation values. This vignette explains the use of the package and demonstrates a typical work flow.
 
   \vspace{1em}
 
