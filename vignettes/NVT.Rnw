@@ -71,7 +71,7 @@ Differential expression analysis, between two samples, is a common task in the a
 
 \section{Installation}
 
-The latest NVT package can be downloaded from: \url{https://github.com/NexusX/NVT/releases}. The installation of the package can be done directly in R.
+The latest NVT package can be downloaded from: \url{https://github.com/Edert/NVT/releases}. The installation of the package can be done directly in R.
 
 <<installNVT, eval=FALSE>>=
 install.packages(file.path("/home/user/Downloads/","NVT_1.0.tar.gz"),
@@ -114,7 +114,7 @@ mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624",
 
 Instead of using the length data generated directly in R or using a simple flat file, it is also possible to load the gene or exon length data directly from an annotation file in gtf or gff format.
 
-<<loadLengthData, eval=FALSE>>=
+<<loadLengthData>>=
 mygffpath<-system.file("extdata", "Ctr-D-UW3CX.gff", package = "NVT")
 mylen1 <- NVTloadgff(mygffpath,"gff3","gene","locus_tag")
 
