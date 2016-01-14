@@ -114,8 +114,18 @@ mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624",
 
 Instead of using the length data generated directly in R or using a simple flat file, it is also possible to load the gene or exon length data directly from an annotation file in gtf or gff format.
 
+\begin{itemize}
+ \item gff-version: version of the provided gff file $[ gff1,gff2,gff3,gtf ]$
+ \item gff-feature: feature to use $[ default: exon ]$
+ \item gff-name: name to use $[ default: gene\_id ]$
+\end{itemize}
+
 <<loadLengthData>>=
-mygffpath<-system.file("extdata", "Ctr-D-UW3CX.gff", package = "NVT")
+#this line gets the path to the gff file provided in the NVT package
+#(annotation from Chlamydia trachomatis, ACCESSION: NC_000117 )
+mygffpath <- system.file("extdata", "Ctr-D-UW3CX.gff", package = "NVT")
+
+#this function loads the gff file from the gffpath
 mylen1 <- NVTloadgff(mygffpath,"gff3","gene","locus_tag")
 
 head(mylen1)
@@ -153,8 +163,6 @@ But for RPKM, RPM and TPM normalization the length data has to be provided.
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"RPKM",mylen)
 @
 
-\newpage
-
 \subsubsection{Normalize the NVTdata }
 
 The now initialized \textit{NVTdata} object can be normalized in the next step.
@@ -190,8 +198,8 @@ NVTplot(mynorm,0.6)
 \centering
 \includegraphics[width=.8\textwidth]{figure/simpleplot-1}
 \caption{
-  \textbf{Simple XY-Scatter-Plot.}
-  This plot shows the simple NVT plot function result}
+  \textbf{XY-Scatter-Plot.}
+  The resulting plot from the simple NVTplot function}
 \label{fig:MA}
 \end{figure}
 
@@ -210,7 +218,7 @@ NVTadvancedplot(mynorm,1,1,2)
 \includegraphics[width=.8\textwidth]{figure/advancedplot-1}
 \caption{
   \textbf{Advanced XY-Scatter-Plot.}
-  This plot shows the advanced NVT plot function result}
+  The NVTadvancedplot function results in a plot produced by ggplot2 with a rug on both axis, indicating the density of the data-points}
 \label{fig:MA}
 \end{figure}
 
@@ -256,11 +264,6 @@ It requires a normalized \textit{NVTdata} object and the correlation coefficient
 NVTtestall(mynorm,"p")
 @
 
-\section{Acknowledgments}
-
-We have benefited in the development of \nvt{} from the help and
-feedback of many individuals,
-
 \section{Session Info}
 
 <<sessInfo, results="asis", echo=FALSE>>=
@@ -270,6 +273,8 @@ toLatex(sessionInfo())
 <<resetOptions, results="hide", echo=FALSE>>=
 options(prompt="> ", continue="+ ")
 @
+
+\newpage
 
 \bibliography{library}
 
