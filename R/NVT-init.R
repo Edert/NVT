@@ -38,6 +38,11 @@ NVTinit <- function(housekeeping_gene_list, expression_list_1, expression_list_2
 
   if( all(rownames(expression_list_1) %in% rownames(expression_list_2)) && all(rownames(expression_list_2) %in% rownames(expression_list_1))  ){
 
+    #check list of hk genes length
+    if(length(housekeeping_gene_list) == 1){
+      print("Warning: only one element in the housekeeping-gene-list this will disable plotting and the pearson correlation calculation")
+    }
+
    #length missing
    if (missing('feat_length')){
 
@@ -409,6 +414,11 @@ NVTnormalize <- function(NVTdataobj) {
 #'
 #'NVTplot(mynorm,0.8)
 NVTplot <- function(NVTdataobj, cex=1,  ...) {
+
+  if(length(NVTdataobj@hklist) == 1){
+    stop("Only one element in the housekeeping-gene-list, can not calculate linear model")
+  }
+
   if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
      && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
      && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)
@@ -487,6 +497,10 @@ NVTplot <- function(NVTdataobj, cex=1,  ...) {
 #'
 #'NVTadvancedplot(mynorm,2,2,2)
 NVTadvancedplot <- function(NVTdataobj,p_cex=1,t_cex=1,l_cex=1) {
+
+  if(length(NVTdataobj@hklist) == 1){
+    stop("Only one element in the housekeeping-gene-list, can not calculate linear model")
+  }
 
   if (requireNamespace("ggplot2", quietly = TRUE)  ) {
   #only needed for dsensity plots
@@ -593,6 +607,11 @@ NVTadvancedplot <- function(NVTdataobj,p_cex=1,t_cex=1,l_cex=1) {
 #'
 #'NVTpearson(mynorm)
 NVTpearson <- function(NVTdataobj) {
+
+  if(length(NVTdataobj@hklist) == 1){
+    stop("Only one element in the housekeeping-gene-list, can not calculate Pearson correlation")
+  }
+
   if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
      && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
      && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)

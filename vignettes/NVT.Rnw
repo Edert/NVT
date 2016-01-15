@@ -98,6 +98,10 @@ We simply load the provided data sets \textit{myexp1} from \textit{GSM1275862}, 
 data(mylen)
 data(myexp1)
 data(myexp2)
+
+#show just the first four elements of the loaded data
+head(mylen,4)
+head(myexp1,4)
 @
 
 In order to evaluate the expression between the two RNA-seq expression samples, we have to define a list of human housekeeping genes \textit{GAPDH, ALB, ACTB, QARS, PGK2, HPRT1, ADA, PPIC} and \textit{POLR2L}.
@@ -107,8 +111,6 @@ mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624",
            "ENSG00000172053","ENSG00000170950","ENSG00000165704",
            "ENSG00000196839","ENSG00000177700")
 @
-
-\newpage
 
 \subsubsection{Load gene length data}
 
@@ -188,7 +190,7 @@ One of the key features of \nvt is the plotting of the XY-Scatter-Plots. This ca
 
 \subsubsection{Simple plot}
 
-The normalized \textit{NVTdata} object can be visualized with the plot function. With the second parameter you can modify the size-ratio of the text and the data points. The linear model in red, is calculated with the data from the housekeeping genes only and the dashed grey line highlights the diagonal.
+The normalized \textit{NVTdata} object can be visualized with the plot function. With the second parameter you can modify the size-ratio of the text and the data points. All expression values are shown as grey dots and the linear model as red line, it is calculated with the data from the housekeeping genes only. The dashed grey line highlights the diagonal, so the perfect correlation between the two data sets.
 
 <<simpleplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
 NVTplot(mynorm,0.6)
@@ -207,9 +209,12 @@ NVTplot(mynorm,0.6)
 
 \subsubsection{Advanced plot}
 
-The \textit{NVTadvancedplot} plots via \href{https://cran.r-project.org/web/packages/ggplot2/index.html}{ggplot2} and the size parameters control data points, text and labels separately. Here we use the default values of 1 for the data points and the text and increase the labels of the housekeeping genes to 2. The density is visualized by the rug in dark red for x- and y-axis and the linear model of the housekeeping gene data is again shown in red and the diagonal is highlighted as grey dashed line.
+The \textit{NVTadvancedplot} plots via \href{https://cran.r-project.org/web/packages/ggplot2/index.html}{ggplot2} and the size parameters control data points, text and labels separately. Here we use the default values of 1 for the data points and the text and increase the labels of the housekeeping genes to 2. Again the grey dots represent the expression data and their density is visualized by the rug in dark red for x- and y-axis.
+The linear model of the housekeeping gene data is shown in red and the diagonal is highlighted as grey dashed line. As we want to compare different methods we now normalize with the TMM method.
 
 <<advancedplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
+mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM",mylen)
+mynorm <- NVTnormalize(mynvt)
 NVTadvancedplot(mynorm,1,1,2)
 @
 
@@ -226,7 +231,7 @@ NVTadvancedplot(mynorm,1,1,2)
 
 \subsection{Correlation values}
 
-In addition to the graphical representation of the gene expression data, the correlation coefficients of the housekeeping genes of the two samples can be calculated.
+In addition to the graphical representation of the gene expression data, the correlation coefficients of the housekeeping genes of the two samples can be calculated with the functions \textit{NVTpearson}, \textit{NVTrmsd} and \textit{NVTmae}.
 
 \subsubsection{Pearson correlation}
 
@@ -238,13 +243,13 @@ NVTpearson(mynorm)
 
 \subsubsection{RMSD and MEA correlation}
 
-Root mean square error (RMSE) also called the root mean square deviation (RMSD) is calculated with the \textit{NVTrmsd} function.
+The root mean square error (RMSE) also called the root mean square deviation (RMSD) is calculated with the \textit{NVTrmsd} function.
 
 <<rmsd>>=
 NVTrmsd(mynorm)
 @
 
-Also the mean absolute error (MAE) it can be calculated and retrieved with the \textit{NVTmae} function.
+And the mean absolute error (MAE) can be calculated and retrieved with the \textit{NVTmae} function.
 
 <<mae>>=
 NVTmae(mynorm)
@@ -252,8 +257,9 @@ NVTmae(mynorm)
 
 \subsection{Test all methods}
 
-To test more normalization methods on the provided data sets in one step, the correlation coefficients of all implemented normalization methods can be calculated with the \textit{NVTtestall} function.
-It requires a normalized \textit{NVTdata} object and the correlation coefficient you are interested in. The methods can be defined with:
+To test more normalization methods on the provided data sets in one single step, the correlation coefficients of all implemented normalization methods can be calculated with the \textit{NVTtestall} function.
+It requires a normalized \textit{NVTdata} object and the correlation coefficient you are interested in. The method can be defined with:
+
 \begin{itemize}
  \item p = Pearson correlation
  \item rmsd = root mean square deviation
