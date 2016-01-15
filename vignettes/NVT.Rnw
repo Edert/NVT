@@ -104,7 +104,7 @@ head(mylen,4)
 head(myexp1,4)
 @
 
-In order to evaluate the expression between the two RNA-seq expression samples, we have to define a list of human housekeeping genes \textit{GAPDH, ALB, ACTB, QARS, PGK2, HPRT1, ADA, PPIC} and \textit{POLR2L}.
+In order to evaluate the expression between the two RNA-seq expression samples, we have to define a list of human housekeeping genes \textit{GAPDH, ALB, ACTB, QARS, PGK2, HPRT1, ADA} and \textit{POLR2L}.
 
 <<createList>>=
 mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624",
@@ -147,10 +147,10 @@ The normalization methods are:
  \item UQ2 = Upper Quartile normalization (from \href{https://www.bioconductor.org/packages/release/bioc/html/NOISeq.html}{NOISeq}\cite{tarazona2011})
  \item Q = Quantile normalization
  \item RPKM = Reads Per Kilobase per Million mapped reads normalization
- \item RPM = Reads per Million mapped reads normalization
- \item DEQ = normalization method included in the \href{https://www.bioconductor.org/packages/release/bioc/html/DESeq.html}{DESeq}\cite{anders2010} package
- \item TPM = transcripts per million normalization
- \item G = use the provided genes to normalize
+ \item RPM = Reads Per Million mapped reads normalization
+ \item TPM = Transcripts Per Million normalization
+ \item DEQ = Relative log expression method included in the \href{https://www.bioconductor.org/packages/release/bioc/html/DESeq.html}{DESeq}\cite{anders2010} package
+ \item G = Use the provided genes to normalize
 \end{itemize}
 
 For the most methods no length information is required.

@@ -8,7 +8,7 @@ method_c <- c("p","rmsd","mae")
 #'@param housekeeping_gene_list A list of housekeeping-genes
 #'@param expression_list_1 The first data frame of expression values per gene
 #'@param expression_list_2 Second data frame of expression values per gene
-#'@param normalization_method The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G] N = No normalization, TC = Total count normalization, Med = Median normalization, TMM = Trimmed Mean of M-values normalization, UQ = Upper Quartile normalization , UQ2 = Upper Quartile normalization (from NOISeq), Q = Quantile normalization, RPKM = Reads Per Kilobase per Million mapped reads normalization, RPM = Reads per Million mapped reads normalization, DEQ = normalization method included in the DESeq package, TPM = transcripts per million normalization, G = use the provided genes to normalize
+#'@param normalization_method The normalization method to use [N,TC,Med,TMM,UQ,UQ2,Q,RPKM,RPM,DEQ,TPM,G] N = No normalization, TC = Total count normalization, Med = Median normalization, TMM = Trimmed Mean of M-values normalization, UQ = Upper Quartile normalization , UQ2 = Upper Quartile normalization (from NOISeq), Q = Quantile normalization, RPKM = Reads Per Kilobase per Million mapped reads normalization, RPM = Reads per Million mapped reads normalization, DEQ = relative log expression method included in the DESeq package, TPM = transcripts per million normalization, G = use the provided genes to normalize
 #'@param feat_length A data frame of length per gene/exon
 #'@return An NVTobject ready for normalization
 #'@examples
@@ -287,7 +287,7 @@ NVTnormalize <- function(NVTdataobj) {
              print ("DESeq normalization!")
 
              if (requireNamespace("DESeq", quietly = TRUE)) {
-               NVTdataobj@norm_method_name="Negative binomial distribution (DESeq method)"
+               NVTdataobj@norm_method_name="Relative log expression method (DESeq)"
                print ("Using DESeq")
                condition = factor( c( "untreated", "treated"))
 
@@ -305,7 +305,7 @@ NVTnormalize <- function(NVTdataobj) {
                NVTdataobj@is_norm = TRUE
 
              } else if(requireNamespace("DESeq2", quietly = TRUE)){
-                NVTdataobj@norm_method_name="Negative binomial distribution (DESeq method)"
+                NVTdataobj@norm_method_name="Relative log expression method (DESeq)"
                 print ("Using DESeq2")
                 condition = factor( c( "untreated", "treated"))
 
