@@ -209,7 +209,7 @@ NVTplot(mynorm,0.6)
 
 \subsubsection{Advanced plot}
 
-The \textit{NVTadvancedplot} plots via \href{https://cran.r-project.org/web/packages/ggplot2/index.html}{ggplot2} and the size parameters control data points, text and labels separately. Here we use the default values of 1 for the data points and the text and increase the labels of the housekeeping genes to 2. Again the grey dots represent the expression data and their density is visualized by the rug in dark red for x- and y-axis.
+The \textit{NVTadvancedplot} plots via \href{https://cran.r-project.org/web/packages/ggplot2/index.html}{ggplot2}\cite{wickham2009} and the size parameters control data points, text and labels separately. Here we use the default values of 1 for the data points and the text and increase the labels of the housekeeping genes to 2. Again the grey dots represent the expression data and their density is visualized by the rug in dark red for x- and y-axis.
 The linear model of the housekeeping gene data is shown in red and the diagonal is highlighted as grey dashed line. As we want to compare different methods we now normalize with the TMM method.
 
 <<advancedplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
