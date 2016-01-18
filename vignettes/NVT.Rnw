@@ -114,7 +114,7 @@ mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624",
 
 \subsubsection{Load gene length data}
 
-Instead of using the length data generated directly in R or using a simple flat file, it is also possible to load the gene or exon length data directly from an annotation file in gtf or gff format.
+Instead of using the length data generated directly in R or using a simple flat file, it is also possible to load the gene or exon length data directly from an annotation file in gtf or gff format. This function utilizes the \href{https://bioconductor.org/packages/release/bioc/html/GenomicRanges.html}{GenomicRanges}\cite{lawrence2013} package.
 
 \begin{itemize}
  \item gff-version: version of the provided gff file $[ gff1,gff2,gff3,gtf ]$
