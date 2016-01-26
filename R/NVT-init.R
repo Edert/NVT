@@ -248,15 +248,7 @@ NVTnormalize <- function(NVTdataobj) {
            RPM={
              print ("RPM normalization!")
 
-             if(nrow(NVTdataobj@length)==0){
-               print ("No RPM normalization possible without gene length, data not normalized!")
-               NVTdataobj@norm1 <- NVTdataobj@exp1
-               NVTdataobj@norm2 <- NVTdataobj@exp2
-               NVTdataobj@is_norm = FALSE
-             }else{
-
              NVTdataobj@norm_method_name="Reads Per Million mapped reads (RPM)"
-             li <- NVTdataobj@length
 
              ci1 <- NVTdataobj@exp1[,1]
              N1 <- sum(ci1)
@@ -266,7 +258,6 @@ NVTnormalize <- function(NVTdataobj) {
              N2 <- sum(ci2)
              NVTdataobj@norm2 <- as.data.frame(ci2/(N1/10^9))
              NVTdataobj@is_norm = TRUE
-            }
            },
            #RPKM2={
            #  print ("RPKM normalization!")
@@ -588,6 +579,72 @@ NVTadvancedplot <- function(NVTdataobj,p_cex=1,t_cex=1,l_cex=1) {
     print("ggplot2 not found, please use the NVTplot function!")
   }
 }
+
+#'Returns the linear model a normalized NVTobject
+#'
+#'@export
+#'@param NVTdataobj A previously initialized and normalized NVTobject
+#'@return Returns the linear model a normalized NVTobject
+#'@examples
+#'library("NVT")
+#'data(myexp1)
+#'data(myexp2)
+#'data(mylen)
+#'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
+#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
+#'
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
+#'mynorm <- NVTnormalize(mynvt)
+#'
+#'mylm <- NVTlm(mynorm)
+#'
+#'summary(mylm)
+NVTlm <- function(NVTdataobj) {
+
+  if(length(NVTdataobj@hklist) == 1){
+    stop("Only one element in the housekeeping-gene-list, can not calculate linear model")
+  }
+
+  if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
+     && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
+     && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)
+     && exists_hkgene_list(NVTdataobj,NVTdataobj@hklist)){
+
+    l1 <- log(NVTdataobj@norm1[[1]])
+    l2 <- log(NVTdataobj@norm2[[1]])
+    names(l1) <- rownames(NVTdataobj@norm1)
+    names(l2) <- rownames(NVTdataobj@norm2)
+
+    #clean up
+    l <- cbind(l1,l2)
+    idx <- apply(l, 1, function(x) all(!is.infinite(x)))
+    l <- l[idx,]
+    idx <- apply(l, 1, function(x) all(!is.na(x)))
+    l <- l[idx,]
+    idx <- apply(l, 1, function(x) all(!is.nan(x)))
+    l <- l[idx,]
+
+    #only houskeeping genes
+    m1 <- l1[NVTdataobj@hklist]
+    m2 <- l2[NVTdataobj@hklist]
+    #clean up for lm
+    m <- cbind(m1,m2)
+    idx <- apply(m, 1, function(x) all(!is.infinite(x)))
+    m <- m[idx,]
+    idx <- apply(m, 1, function(x) all(!is.na(x)))
+    m <- m[idx,]
+    idx <- apply(m, 1, function(x) all(!is.nan(x)))
+    m <- m[idx,]
+    sample1 <- m[,1]
+    sample2 <- m[,2]
+    fm <- lm(sample2 ~ sample1)
+    return(fm)
+
+  }else{
+    stop("Not a valid NVTdata object with normalized values!")
+  }
+}
+
 
 #'Calculate the pearson correclation of the housekeeping genes of an initialized and normalized NVTobject
 #'

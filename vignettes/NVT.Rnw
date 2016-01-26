@@ -25,12 +25,12 @@ opts_chunk$set(
 BiocStyle::latex()
 @
 
-\author{Thomas Eder$^{1,2}$, Thomas Rattei$^{1}$\\[1em]
-  \small{$^{1}$ CUBE Division of Computational Systems Biology,} \\
+\author{Thomas Eder$^{1,2}$, Florian Grebien$^{1}$, Thomas Rattei$^{2}$\\[1em]
+  \small{$^{1}$ Ludwig Boltzmann Institute for Cancer Research,} \\
+  \small{Waehringer Strasse 13A, 1090 Vienna, Austria.} \\
+  \small{$^{2}$ CUBE Division of Computational Systems Biology,} \\
   \small{Department of Microbiology and Ecosystem Science,} \\
-  \small{University of Vienna, Althanstrasse 14, 1090 Vienna, Austria. } \\
-  \small{$^{2}$ Ludwig Boltzmann Institute for Cancer Research,} \\
-  \small{Waehringer Strasse 13A, 1090 Vienna, Austria.} }
+  \small{University of Vienna, Althanstrasse 14, 1090 Vienna, Austria.} }
 
 \title{Visualization and evaluation of RNA-seq data normalization -- the Normalization Visualization Tool}
 
@@ -53,7 +53,7 @@ Differential expression analysis between two samples, is a common task in the an
       \hline
       If you use \nvt{} in published research, please cite:  \\
       \\
-      T. Eder, T.Rattei: \textbf{NVT: a fast and simple test for} \\
+      T. Eder, F. Grebien, T.Rattei: \textbf{NVT: a fast and simple test for} \\
       \textbf{the evaluation of RNA-Seq normalization strategies}. \\
       \emph{JournalXXX} 2016, \textbf{XX}:XXX. \\
       \url{http://dx.doi.org/xxx/xxx}  \\
@@ -142,7 +142,7 @@ The normalization methods are:
  \item N = No normalization
  \item TC = Total count normalization
  \item Med = Median normalization
- \item TMM = Trimmed Mean of M-values normalization,
+ \item TMM = Trimmed Mean of M-values normalization
  \item UQ = Upper Quartile normalization
  \item UQ2 = Upper Quartile normalization (from \href{https://www.bioconductor.org/packages/release/bioc/html/NOISeq.html}{NOISeq}\cite{tarazona2011})
  \item Q = Quantile normalization implemented in \href{https://bioconductor.org/packages/release/bioc/html/limma.html}{limma}\cite{ritchie2015}
@@ -159,7 +159,7 @@ For the most methods no length information is required.
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM")
 @
 
-But for RPKM, RPM and TPM normalization the length data has to be provided.
+But for RPKM and TPM normalization the length data has to be provided.
 
 <<generateNVTobj2>>=
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"RPKM",mylen)
@@ -228,6 +228,16 @@ NVTadvancedplot(mynorm,1,1,2)
 \end{figure}
 
 \newpage
+
+\subsubsection{Linear model}
+
+If required, the linear model plotted as red line can be retrieved with the \textit{NVTlm} function.
+
+<<lm>>=
+mylm <- NVTlm(mynorm)
+
+summary(mylm)
+@
 
 \subsection{Correlation values}
 
