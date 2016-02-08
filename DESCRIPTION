@@ -1,11 +1,11 @@
 Package: NVT
 Type: Package
 Title: Normalization visualisation tool
-Version: 0.9
+Version: 1.0
 Date: 2015-12-29
 Author: Thomas Eder
 Maintainer: Thomas Eder <Thomas.Eder@lbicr.lbg.ac.at>
-Description: This tool normalizes gene expression data from two samples and plots the results as XY-scatter-plots, highlighting the previously defined gene set and the linear model based these genes. In addition it is possible to calculate their Pearson correlation and test and rank all normalization methods based on this correlation.
+Description: This tool normalizes gene expression data from two samples and plots the results as XY-scatter-plots, highlighting the previously defined gene set and the linear model based these genes. In addition it is possible to calculate a user defined correlation value and test and rank all normalization methods based on this correlation.
 License: GPL-3
 LazyData: true
 RoxygenNote: 5.0.1

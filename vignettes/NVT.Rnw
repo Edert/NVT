@@ -40,7 +40,7 @@ BiocStyle::latex()
 
 \begin{abstract}
 
-Differential expression analysis between two samples, is a common task in the analysis of RNA-Seq data. In order to identify differential expressed genes, it is crucial that the two compared data sets are normalized. For the task of normalizing gene expression data there are multiple methods available. However all of these methods are based on certain assumptions, these can or can not be suitable for the data which should be normalized. For planning an adequate normalization strategy one need to answer, how the normalization affects the data sets and which normalization method and its underlying assumptions apply to the analyzed expression data. The \nvt{} package provides a fast and simple way to analyze multiple normalization methods via visualization and correlation values. This vignette explains the use of the package and demonstrates a typical work flow.
+Measuring differential gene expression is a common task in the analysis of RNA-Seq data. To identify differentially expressed genes/features between two samples, it is crucial that the compared datasets are normalized. While multiple methods are available to complete this task, all of them are based on certain assumptions that may or may not be suitable for the type of data they are applied on. To select an adequate normalization strategy the investigator needs to consider how different normalization methods affect the data sets and which normalization method and its underlying assumptions best apply to the analyzed expression data. We developed the \nvt{} package, which provides a fast and simple way to analyze and evaluate multiple normalization methods via visualization and representation of correlation values, based on a user-defined set of uniformly expressed features. This vignette explains the use of the package and demonstrates a typical work flow.
 
   \vspace{1em}
 
@@ -53,7 +53,7 @@ Differential expression analysis between two samples, is a common task in the an
       \hline
       If you use \nvt{} in published research, please cite:  \\
       \\
-      T. Eder, F. Grebien, T.Rattei: \textbf{NVT: a fast and simple test for} \\
+      T. Eder, F. Grebien, T. Rattei: \textbf{NVT: a fast and simple tool for} \\
       \textbf{the evaluation of RNA-Seq normalization strategies}. \\
       \emph{JournalXXX} 2016, \textbf{XX}:XXX. \\
       \url{http://dx.doi.org/xxx/xxx}  \\
