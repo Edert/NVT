@@ -27,12 +27,12 @@ BiocStyle::latex()
 
 \author{Thomas Eder$^{1,2}$, Florian Grebien$^{1}$, Thomas Rattei$^{2}$\\[1em]
   \small{$^{1}$ Ludwig Boltzmann Institute for Cancer Research,} \\
-  \small{Waehringer Strasse 13A, 1090 Vienna, Austria.} \\
+  \small{W{\"a}hringer Stra{\ss}e 13A, 1090 Vienna, Austria.} \\
   \small{$^{2}$ CUBE Division of Computational Systems Biology,} \\
   \small{Department of Microbiology and Ecosystem Science,} \\
-  \small{University of Vienna, Althanstrasse 14, 1090 Vienna, Austria.} }
+  \small{University of Vienna, Althanstra{\ss}e 14, 1090 Vienna, Austria.} }
 
-\title{Visualization and evaluation of RNA-seq data normalization -- the Normalization Visualization Tool}
+\title{Visualization and assessment of RNA-Seq data normalization - the Normalization Visualization Tool}
 
 \begin{document}
 
@@ -40,7 +40,15 @@ BiocStyle::latex()
 
 \begin{abstract}
 
-Measuring differential gene expression is a common task in the analysis of RNA-Seq data. To identify differentially expressed genes/features between two samples, it is crucial that the compared datasets are normalized. While multiple methods are available to complete this task, all of them are based on certain assumptions that may or may not be suitable for the type of data they are applied on. To select an adequate normalization strategy the investigator needs to consider how different normalization methods affect the data sets and which normalization method and its underlying assumptions best apply to the analyzed expression data. We developed the \nvt{} package, which provides a fast and simple way to analyze and evaluate multiple normalization methods via visualization and representation of correlation values, based on a user-defined set of uniformly expressed features. This vignette explains the use of the package and demonstrates a typical work flow.
+Measuring differential gene expression is a common task in the analysis of RNA-Seq data.
+To identify differentially expressed genes between two samples, it is crucial to normalize the datasets.
+While multiple normalization methods are available, all of them are based on certain assumptions that
+may or may not be suitable for the type of data they are applied on. Researchers therefore need to select
+an adequate normalization strategy for each RNA-Seq experiment. This selection includes exploration of
+different normalization methods as well as their comparison. Methods that agree with each other most
+likely represent realistic assumptions under the particular experimental conditions.
+We developed the \nvt{} package, which provides a fast and simple way to analyze and evaluate
+multiple normalization methods via visualization and representation of correlation values, based on a user-defined set of uniformly expressed genes. This vignette explains the use of the package and demonstrates a typical work flow.
 
   \vspace{1em}
 
@@ -54,7 +62,7 @@ Measuring differential gene expression is a common task in the analysis of RNA-S
       If you use \nvt{} in published research, please cite:  \\
       \\
       T. Eder, F. Grebien, T. Rattei: \textbf{NVT: a fast and simple tool for} \\
-      \textbf{the evaluation of RNA-Seq normalization strategies}. \\
+      \textbf{the assessment of RNA-Seq normalization strategies}. \\
       \emph{JournalXXX} 2016, \textbf{XX}:XXX. \\
       \url{http://dx.doi.org/xxx/xxx}  \\
       \hline
