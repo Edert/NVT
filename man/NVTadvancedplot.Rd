@@ -2,7 +2,7 @@
 % Please edit documentation in R/NVT-init.R
 \name{NVTadvancedplot}
 \alias{NVTadvancedplot}
-\title{Plot the MA-plot of a NVTobject with ggplot2}
+\title{Plot the XY-plot of a NVTobject with ggplot2}
 \usage{
 NVTadvancedplot(NVTdataobj, p_cex = 1, t_cex = 1, l_cex = 1)
 }
@@ -16,10 +16,10 @@ NVTadvancedplot(NVTdataobj, p_cex = 1, t_cex = 1, l_cex = 1)
 \item{l_cex}{Label size factor [default = 1]}
 }
 \value{
-Plots the MA-plot with the housekeeping genes indicated
+Plots the Scatter-plot with the housekeeping genes indicated
 }
 \description{
-Plot the MA-plot of a NVTobject with ggplot2
+Plot the XY-plot of a NVTobject with ggplot2
 }
 \examples{
 library("NVT")
@@ -27,7 +27,7 @@ data(myexp1)
 data(myexp2)
 data(mylen)
 mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
-"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
+"ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 mynorm <- NVTnormalize(mynvt)

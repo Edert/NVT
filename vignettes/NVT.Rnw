@@ -112,12 +112,12 @@ head(mylen,4)
 head(myexp1,4)
 @
 
-In order to evaluate the expression between the two RNA-seq expression samples, we have to define a list of human housekeeping genes \textit{GAPDH, ALB, ACTB, QARS, PGK2, HPRT1, ADA} and \textit{POLR2L}.
+In order to evaluate the expression between the two RNA-seq expression samples, we have to define a list of human housekeeping genes \textit{GAPDH, ALB, ACTB, QARS, HPRT1, ADA} and \textit{POLR2L}.
 
 <<createList>>=
 mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624",
-           "ENSG00000172053","ENSG00000170950","ENSG00000165704",
-           "ENSG00000196839","ENSG00000177700")
+           "ENSG00000172053","ENSG00000165704","ENSG00000196839",
+           "ENSG00000177700")
 @
 
 \subsubsection{Load gene length data}
@@ -191,17 +191,17 @@ head(mynvalues)
 
 \subsection{Visualize expression data}
 
-One of the key features of \nvt is the plotting of the XY-Scatter-Plots. This can be done with two functions:
-\textit{NVTplot} and \textit{NVTadvancedplot}.
+One of the key features of \nvt is the plotting of the XY-Scatter-Plots and MA-Plots. This can be done with the functions:
+\textit{NVTplot}, \textit{NVTadvancedplot}, \textit{NVTmaplot} and \textit{NVTadvancedmaplot}.
 
 \newpage
 
-\subsubsection{Simple plot}
+\subsubsection{Simple plot functions}
 
 The normalized \textit{NVTdata} object can be visualized with the plot function. With the second parameter you can modify the size-ratio of the text and the data points. All expression values are shown as grey dots and the linear model as red line, it is calculated with the data from the housekeeping genes only. The dashed grey line highlights the diagonal, so the perfect correlation between the two data sets.
 
 <<simpleplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
-NVTplot(mynorm,0.6)
+NVTplot(mynorm,0.4)
 @
 
 \begin{figure}[!h]
@@ -210,12 +210,29 @@ NVTplot(mynorm,0.6)
 \caption{
   \textbf{XY-Scatter-Plot.}
   The resulting plot from the simple NVTplot function}
+\label{fig:XY}
+\end{figure}
+
+\newpage
+
+The \textit{NVTplotma} function works similar but produces an MA-Plot instead of a Scatter-Plot.
+
+<<simplemaplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
+NVTmaplot(mynorm,0.4)
+@
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=.8\textwidth]{figure/simplemaplot-1}
+\caption{
+  \textbf{MA-Plot.}
+  The resulting plot from the simple NVTmaplot function}
 \label{fig:MA}
 \end{figure}
 
 \newpage
 
-\subsubsection{Advanced plot}
+\subsubsection{Advanced plot functions}
 
 The \textit{NVTadvancedplot} plots via \href{https://cran.r-project.org/web/packages/ggplot2/index.html}{ggplot2}\cite{wickham2009} and the size parameters control data points, text and labels separately. Here we use the default values of 1 for the data points and the text and increase the labels of the housekeeping genes to 2. Again the grey dots represent the expression data and their density is visualized by the rug in dark red for x- and y-axis.
 The linear model of the housekeeping gene data is shown in red and the diagonal is highlighted as grey dashed line. As we want to compare different methods we now normalize with the TMM method.
@@ -223,7 +240,7 @@ The linear model of the housekeeping gene data is shown in red and the diagonal 
 <<advancedplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
 mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM",mylen)
 mynorm <- NVTnormalize(mynvt)
-NVTadvancedplot(mynorm,1,1,2)
+NVTadvancedplot(mynorm,1,1,1)
 @
 
 \begin{figure}[!h]
@@ -232,7 +249,24 @@ NVTadvancedplot(mynorm,1,1,2)
 \caption{
   \textbf{Advanced XY-Scatter-Plot.}
   The NVTadvancedplot function results in a plot produced by ggplot2 with a rug on both axis, indicating the density of the data-points}
-\label{fig:MA}
+\label{fig:adXY}
+\end{figure}
+
+\newpage
+
+As alternative there is also the possiblity to create an MA-Plot with the \textit{NVTadvancedmaplot} function.
+
+<<advancedmaplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
+NVTadvancedmaplot(mynorm,1,1,1)
+@
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=.8\textwidth]{figure/advancedmaplot-1}
+\caption{
+  \textbf{Advanced MA-Plot.}
+  The NVTadvancedmaplot function results in a plot produced by ggplot2 with a rug on both axis, indicating the density of the data-points}
+\label{fig:adMA}
 \end{figure}
 
 \newpage

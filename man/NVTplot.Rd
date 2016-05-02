@@ -2,7 +2,7 @@
 % Please edit documentation in R/NVT-init.R
 \name{NVTplot}
 \alias{NVTplot}
-\title{Plot the MA-plot of a NVTobject}
+\title{Plot the XY-plot of a NVTobject}
 \usage{
 NVTplot(NVTdataobj, cex = 1, ...)
 }
@@ -14,10 +14,10 @@ NVTplot(NVTdataobj, cex = 1, ...)
 \item{...}{Arguments passed on to the plot function}
 }
 \value{
-Plots the MA-plot with the housekeeping genes indicated
+Plots the Scatter-plot with the housekeeping genes indicated
 }
 \description{
-Plot the MA-plot of a NVTobject
+Plot the XY-plot of a NVTobject
 }
 \examples{
 library("NVT")

@@ -385,13 +385,13 @@ NVTnormalize <- function(NVTdataobj) {
   }
 }
 
-#'Plot the MA-plot of a NVTobject
+#'Plot the XY-plot of a NVTobject
 #'
 #'@export
 #'@param NVTdataobj A previously initialized and normalized NVTobject
 #'@param cex Scaling of points and text relative to the default [default=1]
 #'@param ... Arguments passed on to the plot function
-#'@return Plots the MA-plot with the housekeeping genes indicated
+#'@return Plots the Scatter-plot with the housekeeping genes indicated
 #'@examples
 #'library("NVT")
 #'data(myexp1)
@@ -467,13 +467,13 @@ NVTplot <- function(NVTdataobj, cex=1,  ...) {
   }
 }
 
-#'Plot the MA-plot of a NVTobject with ggplot2
+
+#'Plot the MA-plot of a NVTobject
 #'
 #'@export
 #'@param NVTdataobj A previously initialized and normalized NVTobject
-#'@param p_cex Point size factor [default = 1]
-#'@param t_cex Title size factor [default = 1]
-#'@param l_cex Label size factor [default = 1]
+#'@param cex Scaling of points and text relative to the default [default=1]
+#'@param ... Arguments passed on to the plot function
 #'@return Plots the MA-plot with the housekeeping genes indicated
 #'@examples
 #'library("NVT")
@@ -481,7 +481,91 @@ NVTplot <- function(NVTdataobj, cex=1,  ...) {
 #'data(myexp2)
 #'data(mylen)
 #'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
-#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
+#'"ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
+#'
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
+#'mynorm <- NVTnormalize(mynvt)
+#'
+#'NVTmaplot(mynorm,0.8)
+NVTmaplot <- function(NVTdataobj, cex=1,  ...) {
+
+  if(length(NVTdataobj@hklist) == 1){
+    stop("Only one element in the housekeeping-gene-list, can not calculate linear model")
+  }
+
+  if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
+     && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
+     && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)
+     && exists_hkgene_list(NVTdataobj,NVTdataobj@hklist)){
+
+    l1 <- NVTdataobj@norm1[[1]]
+    l2 <- NVTdataobj@norm2[[1]]
+    #mean
+    l <- cbind(l1,l2)
+    mean <- log2(rowMeans(l))
+
+    #log2 fold change
+    fc <- log2(l1/l2)
+
+    names(mean) <- rownames(NVTdataobj@norm1)
+    names(fc) <- rownames(NVTdataobj@norm1)
+    l <- cbind(fc,mean)
+
+    #clean up
+    idx <- apply(l, 1, function(x) all(!is.infinite(x)))
+    l <- l[idx,]
+    idx <- apply(l, 1, function(x) all(!is.na(x)))
+    l <- l[idx,]
+    idx <- apply(l, 1, function(x) all(!is.nan(x)))
+    l <- l[idx,]
+
+    #only houskeeping genes
+    m <- l[NVTdataobj@hklist,]
+
+    #clean up for lm
+    idx <- apply(m, 1, function(x) all(!is.infinite(x)))
+    m <- m[idx,]
+    idx <- apply(m, 1, function(x) all(!is.na(x)))
+    m <- m[idx,]
+    idx <- apply(m, 1, function(x) all(!is.nan(x)))
+    m <- m[idx,]
+
+    #,xlim=c(min, max),ylim=c(min, max)
+    plot(l[,2],l[,1],main=paste("MA-plot of:", names(NVTdataobj@norm1),"vs.",names(NVTdataobj@norm2)),
+         ylab=paste("log2( normalized expression",names(NVTdataobj@norm1),"/",names(NVTdataobj@norm2),")"),
+         xlab=paste("log2(mean normalized expression)")
+         ,pch=20,col=rgb(193,205,205,50,maxColorValue=255),cex.lab = cex,cex.main = cex, cex.axis = cex,cex = cex, ...)
+    mtext(paste(NVTdataobj@norm_method_name,"normalized"),cex=cex)
+
+    fm <- lm(m[,1] ~ m[,2])
+    #print lines
+    abline(fm, col = "red")
+
+    #add hk genes
+    points(m[,2],m[,1],col="blue",pch=20,cex=cex)
+    #hk gene names
+    text(m[,2],m[,1],NVTdataobj@hklist, pos=4, srt = 320, col = "blue",cex=cex)
+
+  }else{
+    stop("Not a valid NVTdata object with normalized values!")
+  }
+}
+
+#'Plot the XY-plot of a NVTobject with ggplot2
+#'
+#'@export
+#'@param NVTdataobj A previously initialized and normalized NVTobject
+#'@param p_cex Point size factor [default = 1]
+#'@param t_cex Title size factor [default = 1]
+#'@param l_cex Label size factor [default = 1]
+#'@return Plots the Scatter-plot with the housekeeping genes indicated
+#'@examples
+#'library("NVT")
+#'data(myexp1)
+#'data(myexp2)
+#'data(mylen)
+#'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
+#'"ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 #'mynorm <- NVTnormalize(mynvt)
@@ -580,6 +664,92 @@ NVTadvancedplot <- function(NVTdataobj,p_cex=1,t_cex=1,l_cex=1) {
   }
 }
 
+#'Plot the MA-plot of a NVTobject with ggplot2
+#'
+#'@export
+#'@param NVTdataobj A previously initialized and normalized NVTobject
+#'@param p_cex Point size factor [default = 1]
+#'@param t_cex Title size factor [default = 1]
+#'@param l_cex Label size factor [default = 1]
+#'@return Plots the MA-plot with the housekeeping genes indicated
+#'@examples
+#'library("NVT")
+#'data(myexp1)
+#'data(myexp2)
+#'data(mylen)
+#'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
+#'"ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
+#'
+#'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
+#'mynorm <- NVTnormalize(mynvt)
+#'
+#'NVTadvancedmaplot(mynorm,2,2,2)
+NVTadvancedmaplot <- function(NVTdataobj,p_cex=1,t_cex=1,l_cex=1) {
+
+  if(length(NVTdataobj@hklist) == 1){
+    stop("Only one element in the housekeeping-gene-list, can not calculate linear model")
+  }
+
+  if (requireNamespace("ggplot2", quietly = TRUE)  ) {
+
+    if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
+       && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
+       && check_norm_list(NVTdataobj@norm1)  && check_norm_list(NVTdataobj@norm2)
+       && exists_hkgene_list(NVTdataobj,NVTdataobj@hklist)){
+      l1 <- NVTdataobj@norm1[[1]]
+      l2 <- NVTdataobj@norm2[[1]]
+
+      #mean
+      l <- cbind(l1,l2)
+      mean <- log2(rowMeans(l))
+
+      #log2 fold change
+      fc <- log2(l1/l2)
+
+      names(mean) <- rownames(NVTdataobj@norm1)
+      names(fc) <- rownames(NVTdataobj@norm1)
+      l <- cbind(fc,mean)
+
+      #clean up
+      idx <- apply(l, 1, function(x) all(!is.infinite(x)))
+      l <- l[idx,]
+      idx <- apply(l, 1, function(x) all(!is.na(x)))
+      l <- l[idx,]
+      idx <- apply(l, 1, function(x) all(!is.nan(x)))
+      l <- l[idx,]
+
+      #only houskeeping genes
+      m <- l[NVTdataobj@hklist]
+
+      myl <- as.data.frame(l)
+
+      mysubl <-  myl[NVTdataobj@hklist,]
+      myl[,3] <- rownames(myl)
+      colnames(myl)[3] <- "names"
+
+      mysubdata=subset(myl,names %in% NVTdataobj@hklist)
+      rownames(mysubdata) <- NULL
+
+      d <-  ggplot2::ggplot(data=myl, ggplot2::aes(x = mean, y = fc)) + ggplot2::geom_point( alpha = 0.2,  color="gray", cex=p_cex)
+      d <- d + ggplot2::geom_smooth(data=mysubdata, ggplot2::aes(y =fc, x = mean), method=lm, fullrange=TRUE, se=FALSE, alpha = 0.1, color="red", lwd = 0.5)
+      d <- d + ggplot2::geom_point(data=mysubdata, ggplot2::aes(y = fc, x = mean), alpha = 0.8, color="blue", cex=p_cex)
+
+      d <- d + ggplot2::geom_text(data=mysubdata, ggplot2::aes(label =names), hjust=-0.2, vjust=0.5, color="blue", cex=l_cex, angle = 320)
+
+      d <- d + ggplot2::ggtitle(bquote(atop(.(paste("MA-plot of:", names(NVTdataobj@norm1),"vs",names(NVTdataobj@norm2))), atop(italic(.(paste(NVTdataobj@norm_method_name,"normalized"))), ""))))
+      d <- d + ggplot2::xlab(paste("log2( mean expression )"))
+      d <- d + ggplot2::ylab(paste("log2( normalized expression",names(NVTdataobj@norm1),"/",names(NVTdataobj@norm2),")"))
+      d <- d + ggplot2::geom_rug(col="darkred",alpha=.1,position='jitter')
+      d <- d + ggplot2::theme(axis.title.x = ggplot2::element_text(size = 10 * t_cex), axis.title.y = ggplot2::element_text(size = 10 * t_cex), plot.title = ggplot2::element_text(size = 10 * t_cex), axis.text.x = ggplot2::element_text(size = 10 * t_cex), axis.text.y = ggplot2::element_text(size = 10 * t_cex) )
+      d
+    }else{
+      stop("Not a valid NVTdata object with normalized values!")
+    }
+  }else{
+    print("ggplot2 not found, please use the NVTmaplot function!")
+  }
+}
+
 #'Returns the linear model a normalized NVTobject
 #'
 #'@export
@@ -591,7 +761,7 @@ NVTadvancedplot <- function(NVTdataobj,p_cex=1,t_cex=1,l_cex=1) {
 #'data(myexp2)
 #'data(mylen)
 #'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
-#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
+#'"ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N")
 #'mynorm <- NVTnormalize(mynvt)
@@ -657,7 +827,7 @@ NVTlm <- function(NVTdataobj) {
 #'data(myexp2)
 #'data(mylen)
 #'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
-#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
+#'"ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM")
 #'mynorm <- NVTnormalize(mynvt)
@@ -706,7 +876,7 @@ NVTpearson <- function(NVTdataobj) {
 #'data(myexp2)
 #'data(mylen)
 #'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
-#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
+#'"ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM")
 #'mynorm <- NVTnormalize(mynvt)
@@ -750,7 +920,7 @@ NVTrmsd <- function(NVTdataobj) {
 #'data(myexp2)
 #'data(mylen)
 #'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
-#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
+#'"ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"TMM")
 #'mynorm <- NVTnormalize(mynvt)
@@ -794,7 +964,7 @@ NVTmae <- function(NVTdataobj) {
 #'data(myexp2)
 #'data(mylen)
 #'mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624","ENSG00000172053",
-#'"ENSG00000170950","ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
+#'"ENSG00000165704","ENSG00000196839","ENSG00000168938","ENSG00000177700")
 #'
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N",mylen)
 #'

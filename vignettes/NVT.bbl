@@ -1,0 +1,59 @@
+\begin{thebibliography}{1}
+
+\bibitem{himes2014}
+{Himes}, B.~E., {Jiang}, {X.}, {Wagner}, {P.}, {Hu}, {R.}, {Wang}, {Q.},
+  {Klanderman}, {B.}, {Whitaker}, R.~M., {Duan}, {Q.}, {Lasky-Su}, {J.},
+  {Nikolos}, {C.}, {Jester}, {W.}, {Johnson}, {M.}, {Panettieri}, R.~A.,
+  {Tantisira}, K.~G., {Weiss}, S.~T., {Lu}, and {Q.}
+\newblock {{R}{N}{A}-{S}eq {T}ranscriptome {P}rofiling {I}dentifies
+  {C}{R}{I}{S}{P}{L}{D}2 as a {G}lucocorticoid {R}esponsive {G}ene that
+  {M}odulates {C}ytokine {F}unction in {A}irway {S}mooth {M}uscle {C}ells}.
+\newblock {\em PLoS ONE}, 9(6):e99625, 2014.
+\newblock \href {http://dx.doi.org/10.1371/journal.pone.0099625}
+  {\path{doi:10.1371/journal.pone.0099625}}.
+
+\bibitem{lawrence2013}
+Michael Lawrence, Wolfgang Huber, Herv\'e Pag\`es, Patrick Aboyoun, Marc
+  Carlson, Robert Gentleman, Martin Morgan, and Vincent Carey.
+\newblock Software for computing and annotating genomic ranges.
+\newblock {\em {PLoS} Computational Biology}, 9, 2013.
+\newblock \href {http://dx.doi.org/10.1371/journal.pcbi.1003118}
+  {\path{doi:10.1371/journal.pcbi.1003118}}.
+
+\bibitem{lawrence2009}
+Michael Lawrence, Robert Gentleman, and Vincent Carey.
+\newblock rtracklayer: an r package for interfacing with genome browsers.
+\newblock {\em Bioinformatics}, 25:1841--1842, 2009.
+\newblock \href {http://dx.doi.org/10.1093/bioinformatics/btp328}
+  {\path{doi:10.1093/bioinformatics/btp328}}.
+
+\bibitem{tarazona2011}
+Tarazona S, Garcia-Alcalde F, Dopazo J, Ferrer A, and Conesa A.
+\newblock Differential expression in rna-seq: a matter of depth.
+\newblock {\em Genome research}, 21:4436, 2011.
+\newblock \href {http://dx.doi.org/10.1101/gr.124321.111}
+  {\path{doi:10.1101/gr.124321.111}}.
+
+\bibitem{ritchie2015}
+Matthew~E Ritchie, Belinda Phipson, Di~Wu, Yifang Hu, Charity~W Law, Wei Shi,
+  and Gordon~K Smyth.
+\newblock {limma} powers differential expression analyses for {RNA}-sequencing
+  and microarray studies.
+\newblock {\em Nucleic Acids Research}, 43(7):e47, 2015.
+\newblock \href {http://dx.doi.org/10.1093/nar/gkv007}
+  {\path{doi:10.1093/nar/gkv007}}.
+
+\bibitem{anders2010}
+Simon Anders and Wolfgang Huber.
+\newblock Differential expression analysis for sequence count data.
+\newblock {\em Genome Biology}, 11:R106, 2010.
+\newblock \href {http://dx.doi.org/10.1186/gb-2010-11-10-r106}
+  {\path{doi:10.1186/gb-2010-11-10-r106}}.
+
+\bibitem{wickham2009}
+Hadley Wickham.
+\newblock {\em ggplot2: Elegant Graphics for Data Analysis}.
+\newblock Springer-Verlag New York, 2009.
+\newblock URL: \url{http://had.co.nz/ggplot2/book}.
+
+\end{thebibliography}
