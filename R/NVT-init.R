@@ -719,7 +719,13 @@ NVTadvancedmaplot <- function(NVTdataobj,p_cex=1,t_cex=1,l_cex=1) {
       l <- l[idx,]
 
       #only houskeeping genes
-      m <- l[NVTdataobj@hklist]
+      m <- l[NVTdataobj@hklist,]
+      idx <- apply(m, 1, function(x) all(!is.infinite(x)))
+      m <- m[idx,]
+      idx <- apply(m, 1, function(x) all(!is.na(x)))
+      m <- m[idx,]
+      idx <- apply(m, 1, function(x) all(!is.nan(x)))
+      m <- m[idx,]
 
       myl <- as.data.frame(l)
 
