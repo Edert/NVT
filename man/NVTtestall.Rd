@@ -4,12 +4,14 @@
 \alias{NVTtestall}
 \title{Calculate the chosen correclation of the housekeeping genes of an initialized NVTobject for all normalization methods}
 \usage{
-NVTtestall(NVTdataobj, cmethod)
+NVTtestall(NVTdataobj, cmethod = "p", verbose = TRUE)
 }
 \arguments{
 \item{NVTdataobj}{A previously initialzed and normalized NVTobject}
 
-\item{cmethod}{Pearson correlation (p), root mean square deviation (rmsd) or mean absolute error (mae)}
+\item{cmethod}{Pearson correlation (p), root mean square deviation (rmsd) or mean absolute error (mae) [default="p"]}
+
+\item{verbose}{mode on or off (T/F) [default=TRUE]}
 }
 \value{
 Sorted pearson correlation coefficients, RMSD or MAE of the normalized housekeeping genes between the samples

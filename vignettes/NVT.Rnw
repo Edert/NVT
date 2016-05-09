@@ -41,7 +41,7 @@ BiocStyle::latex()
 \begin{abstract}
 
 Measuring differential gene expression is a common task in the analysis of RNA-Seq data.
-To identify differentially expressed genes between two samples, it is crucial to normalize the datasets.
+To identify differentially expressed genes between two samples, it is crucial to normalize the data sets.
 While multiple normalization methods are available, all of them are based on certain assumptions that
 may or may not be suitable for the type of data they are applied on. Researchers therefore need to select
 an adequate normalization strategy for each RNA-Seq experiment. This selection includes exploration of
@@ -112,12 +112,21 @@ head(mylen,4)
 head(myexp1,4)
 @
 
-In order to evaluate the expression between the two RNA-seq expression samples, we have to define a list of human housekeeping genes \textit{GAPDH, ALB, ACTB, QARS, HPRT1, ADA} and \textit{POLR2L}.
+In order to evaluate the expression between the two RNA-seq expression samples, we have to define a list of human housekeeping genes \textit{GAPDH, ALB, ACTB,  HPRT1, ADA, POLR2L, VCP, GPI, HBS1L} and \textit{SDHA}. For the evaluation with the XY-Scatter or MA-plots a linear model is calculated in order to achieve reasonable results it is recommended to use at least 10 \cite{harrell__regression_2015} data points.
 
 <<createList>>=
 mylist1<-c("ENSG00000111640","ENSG00000163631","ENSG00000075624",
-           "ENSG00000172053","ENSG00000165704","ENSG00000196839",
-           "ENSG00000177700")
+           "ENSG00000165704","ENSG00000196839","ENSG00000177700",
+           "ENSG00000165280","ENSG00000105220","ENSG00000112339",
+           "ENSG00000073578")
+@
+
+But there is also a list of human housekeeping genes supplied by the \nvt tool, which can be retrieved the following way:
+
+<<hethsList>>=
+data(mylist_hs)
+
+mylist_hs
 @
 
 \subsubsection{Load gene length data}
@@ -177,8 +186,14 @@ mynvt <- NVTinit(mylist1,myexp1,myexp2,"RPKM",mylen)
 
 The now initialized \textit{NVTdata} object can be normalized in the next step.
 
-<<normlaizeNVTobj>>=
+<<normlaizeNVTobj1>>=
 mynorm <- NVTnormalize(mynvt)
+@
+
+The text output can be suppressed via verbose=FALSE.
+
+<<normlaizeNVTobj2>>=
+mynvt <- NVTnormalize(mynvt,verbose=F)
 @
 
 If required the now normalized data can be retrieved easily.
@@ -254,7 +269,7 @@ NVTadvancedplot(mynorm,1,1,1)
 
 \newpage
 
-As alternative there is also the possiblity to create an MA-Plot with the \textit{NVTadvancedmaplot} function.
+As alternative there is also the possibility to create an MA-Plot with the \textit{NVTadvancedmaplot} function.
 
 <<advancedmaplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
 NVTadvancedmaplot(mynorm,1,1,1)
@@ -321,6 +336,94 @@ It requires a normalized \textit{NVTdata} object and the correlation coefficient
 <<testall>>=
 NVTtestall(mynorm,"p")
 @
+
+It is also possible to oppress text output via verbose=FALSE (default: verbose=TRUE)
+
+<<testall_v>>=
+NVTtestall(mynorm,"p",verbose=F)
+@
+
+\subsection{Example use case}
+
+To show a typical use case, the RNA-Seq data of GEO accession: \href{http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE60052}{GSE60052} was used. The following data sets of healthy control lung cells and small cell lung carcinoma cells were used: healthy \textit{GSM1464282}, \textit{GSM1464283} \textit{GSM1464284} and
+small cell lung cancer \textit{GSM1464289}, \textit{GSM1464290}, \textit{GSM1464291}. We expect that the overall expression patterns will be quite diverse if we compare healthy with cancer cell expression and it is strongly recommended to use genes which are stably expressed.
+
+First we load the \nvt library, the gene length data, the housekeeping gene list and the expression data.
+
+<<uc_getdata>>=
+library("NVT")
+data(myusecaseexp)
+data(myusecaselen)
+data(mylist_hs)
+
+head(myusecaseexp)
+@
+
+Now we create an NVTobject with the expression of the first healthy and the first small cell lung cancer samples, add the gene length data and set the first normalization method to test to RPKM. We also apply the normalization and have a look at the resulting expression values.
+
+<<uc_initdata>>=
+mynvt <- NVTinit(mylist_hs,myusecaseexp[,1,drop=FALSE],myusecaseexp[,4,drop=FALSE],
+"RPKM",myusecaselen)
+mynorm <- NVTnormalize(mynvt)
+
+mynvalues <- show(mynorm)
+head(mynvalues)
+@
+
+\newpage
+
+Then we create the first plot.
+
+<<uc_simpleplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
+NVTplot(mynorm,0.4)
+@
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=.8\textwidth]{figure/uc_simpleplot-1}
+\caption{
+  \textbf{XY-Scatter-Plot.}
+  The resulting plot from the simple NVTplot function shows a broad cloud of expression values and the linear model is not very close to the diagonal}
+\label{fig:uc_XY}
+\end{figure}
+
+\newpage
+
+In addition we also create the MA-plot.
+
+<<uc_advancedmaplot, dev="pdf", fig.width=3.5, fig.height=3.5>>=
+NVTadvancedmaplot(mynorm,1,1,1)
+@
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=.8\textwidth]{figure/uc_advancedmaplot-1}
+\caption{
+  \textbf{Advanced MA-Plot.}
+  The NVTadvancedmaplot function shows also that the expression of the genes is quite diverse resulting in this broad cloud and also the chosen genes are widely distributed and some are very distant to the horizontal 0-line indicating that their expression is strongly varying.}
+\label{fig:uc_adMA}
+\end{figure}
+
+Despite we have seen that the chosen gene set is not optimal, we test all implemented normalization methods. We apply the NVTtestall function, which indicates that Q is the best normalization method based on the selected genes.
+
+<<uc_testall>>=
+NVTtestall(mynorm,"p")
+@
+
+In order to apply this test to all data sets we can use a simple loop to go through all healthy versus cancer comparisons.
+
+<<uc_allvsall>>=
+for (dataset1 in 1:3){
+  dataset2 <- dataset1+3
+  mynvt <- NVTinit(mylist_hs,myusecaseexp[,dataset1,drop=FALSE],
+  myusecaseexp[,dataset2,drop=FALSE],"N",myusecaselen)
+  mynorm <- NVTnormalize(mynvt)
+
+  print(NVTtestall(mynorm,"p",verbose=F))
+}
+@
+
+\newpage
 
 \section{Session Info}
 

@@ -82,6 +82,7 @@ NVTinit <- function(housekeeping_gene_list, expression_list_1, expression_list_2
 #'
 #'@export
 #'@param NVTdataobj A previously initialized NVTobject
+#'@param verbose mode on or off (T/F) [default=TRUE]
 #'@return A normalized NVTobject
 #'@examples
 #'library("NVT")
@@ -96,14 +97,14 @@ NVTinit <- function(housekeeping_gene_list, expression_list_1, expression_list_2
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N",mylen)
 #'
 #'mynorm <- NVTnormalize(mynvt)
-NVTnormalize <- function(NVTdataobj) {
+NVTnormalize <- function(NVTdataobj, verbose=TRUE) {
 
   if(check_expression_list(NVTdataobj@exp1) && check_expression_list(NVTdataobj@exp2)
      && check_hkgene_list(NVTdataobj@hklist) && check_method(NVTdataobj@norm_method)
      && exists_hkgene_list(NVTdataobj,NVTdataobj@hklist)){
     switch(NVTdataobj@norm_method,
            N={
-             print ("No normalization!")
+             if(verbose){print ("No normalization!")}
              NVTdataobj@norm_method_name="Not"
 
              NVTdataobj@norm1 <- NVTdataobj@exp1
@@ -111,7 +112,7 @@ NVTnormalize <- function(NVTdataobj) {
              NVTdataobj@is_norm = TRUE
            },
            TC={
-             print ("Total count normalization!")
+             if(verbose){print ("Total count normalization!")}
              NVTdataobj@norm_method_name="Total count"
 
              ci1 <- NVTdataobj@exp1[,1]
@@ -124,7 +125,7 @@ NVTnormalize <- function(NVTdataobj) {
              NVTdataobj@is_norm = TRUE
            },
            Med={
-             print ("Median normalization!")
+             if(verbose){print ("Median normalization!")}
              NVTdataobj@norm_method_name="Median"
 
              ci1 <- NVTdataobj@exp1[,1]
@@ -137,7 +138,7 @@ NVTnormalize <- function(NVTdataobj) {
              NVTdataobj@is_norm = TRUE
            },
            TMM={
-             print ("Trimmed Mean of M-values normalization!")
+             if(verbose){print ("Trimmed Mean of M-values normalization!")}
              NVTdataobj@norm_method_name="Trimmed Mean of M-values (TMM)"
 
              if (requireNamespace("NOISeq", quietly = TRUE)) {
@@ -158,7 +159,7 @@ NVTnormalize <- function(NVTdataobj) {
 
            },
            UQ={
-             print ("Upper Quartile normalization!")
+             if(verbose){print ("Upper Quartile normalization!")}
              NVTdataobj@norm_method_name="Upper Quartile"
 
              ci1 <- NVTdataobj@exp1[,1]
@@ -179,7 +180,7 @@ NVTnormalize <- function(NVTdataobj) {
              NVTdataobj@is_norm = TRUE
            },
            UQ2={
-             print ("Upper Quartile normalization (from NOISeq)!")
+             if(verbose){print ("Upper Quartile normalization (from NOISeq)!")}
              NVTdataobj@norm_method_name="Upper Quartile (from NOISeq)"
 
              if (requireNamespace("NOISeq", quietly = TRUE)) {
@@ -200,7 +201,7 @@ NVTnormalize <- function(NVTdataobj) {
 
            },
            Q={
-             print ("Quantile normalization!")
+             if(verbose){print ("Quantile normalization!")}
              NVTdataobj@norm_method_name="Quantile"
 
              if (requireNamespace("limma", quietly = TRUE)) {
@@ -221,7 +222,7 @@ NVTnormalize <- function(NVTdataobj) {
 
            },
            RPKM={
-             print ("RPKM normalization!")
+             if(verbose){print ("RPKM normalization!")}
 
              if(nrow(NVTdataobj@length)==0){
                print ("No RPKM normalization possible without gene length, data not normalized!")
@@ -246,7 +247,7 @@ NVTnormalize <- function(NVTdataobj) {
             }
            },
            RPM={
-             print ("RPM normalization!")
+             if(verbose){print ("RPM normalization!")}
 
              NVTdataobj@norm_method_name="Reads Per Million mapped reads (RPM)"
 
@@ -275,17 +276,17 @@ NVTnormalize <- function(NVTdataobj) {
            #  NVTdataobj@is_norm = TRUE
            #},
            DEQ={
-             print ("DESeq normalization!")
+             if(verbose){print ("DESeq normalization!")}
 
              if (requireNamespace("DESeq", quietly = TRUE)) {
                NVTdataobj@norm_method_name="Relative log expression method (DESeq)"
-               print ("Using DESeq")
+               if(verbose){print ("Using DESeq")}
                condition = factor( c( "untreated", "treated"))
 
                if(is.integer(NVTdataobj@exp1) && is.integer(NVTdataobj@exp1) ){
                  mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
                }else{
-                 print ("Input counts are not integer, converting them!")
+                 if(verbose){print ("Input counts are not integer, converting them!")}
                  mymatrix <- as.matrix(cbind(as.integer(NVTdataobj@exp1[,1]),as.integer(NVTdataobj@exp2[,1])))
                }
 
@@ -297,13 +298,13 @@ NVTnormalize <- function(NVTdataobj) {
 
              } else if(requireNamespace("DESeq2", quietly = TRUE)){
                 NVTdataobj@norm_method_name="Relative log expression method (DESeq)"
-                print ("Using DESeq2")
+                if(verbose){print ("Using DESeq2")}
                 condition = factor( c( "untreated", "treated"))
 
                 if(is.integer(NVTdataobj@exp1) && is.integer(NVTdataobj@exp1) ){
                   mymatrix <- as.matrix(cbind(NVTdataobj@exp1,NVTdataobj@exp2))
                 }else{
-                   print ("Input counts are not integer, converting them!")
+                  if(verbose){print ("Input counts are not integer, converting them!")}
                    mymatrix <- as.matrix(cbind(as.integer(NVTdataobj@exp1[,1]),as.integer(NVTdataobj@exp2[,1])))
                 }
 
@@ -323,7 +324,7 @@ NVTnormalize <- function(NVTdataobj) {
 
            },
            TPM={
-             print ("TPM normalization!")
+             if(verbose){print ("TPM normalization!")}
 
              if(nrow(NVTdataobj@length)==0){
                print ("No TPM normalization possible without gene length, data not normalized!")
@@ -353,8 +354,10 @@ NVTnormalize <- function(NVTdataobj) {
             }
            },
            G={
-             print ("Normalization by given gene-set!")
-             print (NVTdataobj@hklist)
+             if(verbose){
+               print ("Normalization by given gene-set!")
+               print (NVTdataobj@hklist)
+             }
              NVTdataobj@norm_method_name="Gene-set"
 
              gn1 <- mean(NVTdataobj@exp1[NVTdataobj@hklist,])
@@ -364,7 +367,7 @@ NVTnormalize <- function(NVTdataobj) {
              NVTdataobj@is_norm = TRUE
            },
            {
-             print ("No normalization!")
+             if(verbose){print ("No normalization!")}
              NVTdataobj@norm_method_name="Not"
 
              NVTdataobj@norm1 <- NVTdataobj@exp1
@@ -520,7 +523,7 @@ NVTmaplot <- function(NVTdataobj, cex=1,  ...) {
     l <- l[idx,]
 
     #only houskeeping genes
-    m <- l[NVTdataobj@hklist,]
+    m <- cbind(fc,mean)[NVTdataobj@hklist,]
 
     #clean up for lm
     idx <- apply(m, 1, function(x) all(!is.infinite(x)))
@@ -719,7 +722,7 @@ NVTadvancedmaplot <- function(NVTdataobj,p_cex=1,t_cex=1,l_cex=1) {
       l <- l[idx,]
 
       #only houskeeping genes
-      m <- l[NVTdataobj@hklist,]
+      m <- cbind(fc,mean)[NVTdataobj@hklist,]
       idx <- apply(m, 1, function(x) all(!is.infinite(x)))
       m <- m[idx,]
       idx <- apply(m, 1, function(x) all(!is.na(x)))
@@ -962,7 +965,8 @@ NVTmae <- function(NVTdataobj) {
 #'
 #'@export
 #'@param NVTdataobj A previously initialzed and normalized NVTobject
-#'@param cmethod Pearson correlation (p), root mean square deviation (rmsd) or mean absolute error (mae)
+#'@param cmethod Pearson correlation (p), root mean square deviation (rmsd) or mean absolute error (mae) [default="p"]
+#'@param verbose mode on or off (T/F) [default=TRUE]
 #'@return Sorted pearson correlation coefficients, RMSD or MAE of the normalized housekeeping genes between the samples
 #'@examples
 #'library("NVT")
@@ -975,7 +979,7 @@ NVTmae <- function(NVTdataobj) {
 #'mynvt <- NVTinit(mylist1,myexp1,myexp2,"N",mylen)
 #'
 #'NVTtestall(mynvt,"p")
-NVTtestall <- function(NVTdataobj, cmethod) {
+NVTtestall <- function(NVTdataobj, cmethod="p", verbose=TRUE) {
   tmpNVT <- NVTdataobj
   first=TRUE
   check_cmethod(cmethod)
@@ -983,7 +987,7 @@ NVTtestall <- function(NVTdataobj, cmethod) {
   #test all methods and extract correlation value
   for (n in method_v) {
     tmpNVT@norm_method <- n
-    tmpnorm <- NVTnormalize(tmpNVT)
+    tmpnorm <- NVTnormalize(tmpNVT,verbose = verbose)
 
     switch(cmethod,
            p={
@@ -1175,3 +1179,38 @@ check_cmethod <- function(c_method) {
 #'   \item{GSM1275863}
 #' }
 "myexp2"
+
+#' List of human housekeeping genes
+#'
+#' A data set of 10 human housekeeping genes
+#'
+#' @format A list of 10 elements:
+#' \itemize{
+#'   \item{HK_genes}
+#' }
+"mylist_hs"
+
+#' List of ensembl human gene-length
+#'
+#' A data set with each human ensemble gene name and its length in nucleotides
+#'
+#' @format A list of 60619 elements:
+#' \itemize{
+#'   \item{Length}
+#' }
+"myusecaselen"
+
+#' Dataframe of expression of six human RNA-Seq samples
+#'
+#' A data set with each gene name and its expression in the six samples
+#'
+#' @format A data frame with 60619 rows and 6 variables:
+#' \itemize{
+#'   \item{GSM1464282}
+#'   \item{GSM1464283}
+#'   \item{GSM1464284}
+#'   \item{GSM1464289}
+#'   \item{GSM1464290}
+#'   \item{GSM1464291}
+#' }
+"myusecaseexp"

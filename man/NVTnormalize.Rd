@@ -4,10 +4,12 @@
 \alias{NVTnormalize}
 \title{Normalize a NVTobject, the normalization method has been set already in the initialization step}
 \usage{
-NVTnormalize(NVTdataobj)
+NVTnormalize(NVTdataobj, verbose = TRUE)
 }
 \arguments{
 \item{NVTdataobj}{A previously initialized NVTobject}
+
+\item{verbose}{mode on or off (T/F) [default=TRUE]}
 }
 \value{
 A normalized NVTobject
