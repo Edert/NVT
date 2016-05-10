@@ -1102,7 +1102,7 @@ exists_hkgene_list <- function(NVTobject,hkgene_list) {
 #'@param exp_list Expression gene list
 #'@return true or false
 check_expression_list <- function(exp_list) {
-  if( is.data.frame(exp_list) || is.list(exp_list) || is.vector(exp_list)){
+  if( is.data.frame(exp_list) || is.list(exp_list) || is.vector(exp_list) || is.matrix(exp_list)){
     return(TRUE)
   }else{
     stop("Expression list is no data frame, list or vector!")

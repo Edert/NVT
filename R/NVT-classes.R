@@ -69,11 +69,12 @@ setClass(
 #'@export
 setMethod(f = "show", signature = "NVTdata",
           definition = function(object) {
-            if(check_norm_list(object@norm1)  && check_norm_list(object@norm2)){
-              myout <- cbind(object@norm1,object@norm2)
-              return(myout)
+            if(length(object@norm1)!=0){
+                myout <- cbind(object@norm1,object@norm2)
+                return(myout)
             }else{
-              stop("Not a valid NVTdata object with normalized values!")
+              return(str(object))
+              #stop("Not a valid NVTdata object with normalized values!")
             }
           }
 )
