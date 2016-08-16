@@ -36,6 +36,7 @@ BiocStyle::latex()
 
 \begin{document}
 
+
 \maketitle
 
 \begin{abstract}
@@ -63,8 +64,8 @@ multiple normalization methods via visualization and representation of correlati
       \\
       T. Eder, F. Grebien, T. Rattei: \textbf{NVT: a fast and simple tool for} \\
       \textbf{the assessment of RNA-Seq normalization strategies}. \\
-      \emph{JournalXXX} 2016, \textbf{XX}:XXX. \\
-      \url{http://dx.doi.org/xxx/xxx}  \\
+      \emph{Bioinformatics} 2016, \textbf{XX}:XXX. \\
+      \url{http://bioinformatics.oxfordjournals.org/content/early/2016/08/11/bioinformatics.btw521.abstract}  \\
       \hline
     \end{tabular}
   \end{center}
